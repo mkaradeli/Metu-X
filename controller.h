@@ -20,19 +20,19 @@ typedef struct {
   double *ref;
   double *feedback;
   double y;
+  double ref_rateLimited;
+  double ref_pre;
   double error;
   double error_pre;
-  double error_rateLimited;
 
   double uP;
   double uI;
   double uD;
   double uFF;
   double u;
-  double saturated;
 
-} pid_object_s;
+} pid_controller_s;
 
-pid_object_s pid_object_create(pid_parameters_s *param, double *ref,
-                               double *feedback);
-void pid_object_iterate();
+pid_controller_s pid_create(pid_parameters_s *param, double *ref,
+                            double *feedback);
+void pid_iterate(pid_controller_s *pid);
