@@ -1,4 +1,4 @@
-#include "controller.h"
+#include "pid.h"
 
 pid_parameters_s altitude_controller = {
     1,  // kP

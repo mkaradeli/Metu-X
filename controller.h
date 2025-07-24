@@ -1,3 +1,5 @@
+#include "pid.h"
+
 #ifndef __CONTROLLER_H__
 #define __CONTROLLER_H__
 
@@ -23,6 +25,15 @@ typedef struct {
   long int clock; // in ns or clock cycles
 } controller_input_s;
 
+typedef void (*update_function_p)(controller_input_s *);
+typedef struct {
+  update_function_p updateIMU;
+  update_function_p updateLidar;
+  update_function_p updatePressureTransducers;
+  update_function_p updateEncoder;
+  update_function_p updateBatteryVoltage;
+} sensor_updates_functions_s;
+
 typedef struct {
   double motor_voltage[4]; // in volts
   double motor_pwm[4];     // normalized, from -1 to 1
@@ -30,56 +41,26 @@ typedef struct {
 } controller_output_s;
 
 typedef struct {
-  double kP;
-  double kI;
-  double kD;
-  double kFF;
-  double dT;
+  controller_input_s input;
+  controller_output_s outputs;
+  sensor_updates_functions_s sensor_update;
 
-  double rateLimitMax;
-  double rateLimitMin;
+  pid_parameters_s altitude_control_parameters;
+  pid_parameters_s attitude_control_parameters;
+  pid_parameters_s motor_control_parameters;
 
-  double saturationMax;
-  double saturationMin;
-  double integralSaturationMax;
-  double integralSaturationMin;
-} pid_parameters_s;
+  pid_controller_s altitude_controller;
+  pid_controller_s pitch_controller;
+  pid_controller_s roll_controller;
+  pid_controller_s motor_controller[4];
 
-typedef struct {
-  pid_parameters_s *parameter;
-  double *ref;
-  double *feedback;
-  double y;
-  double ref_rateLimited;
-  double ref_pre;
-  double error;
-  double error_pre;
+} controller_s;
 
-  double uP;
-  double uI;
-  double uD;
-  double uFF;
-  double u;
-
-} pid_controller_s;
-
-typedef struct {
-  double *u;
-  double y;
-  double y_pre;
-  double alpha;
-} ema_filter_s; // exponential moving average
-
-void pid_controller_init(pid_controller_s *pid, pid_parameters_s *param,
-                         double *ref, double *feedback);
-void pid_controller_iterate(pid_controller_s *pid);
-void pid_controller_reset(pid_controller_s *pid);
-
-void controller_scheduler();
-
-void ema_filter_init(ema_filter_s *ema_filter, double *ref,
-                     double alpha); // exponential moving average
-void ema_filter_iter(ema_filter_s *ema_filter);
-void ema_filter_reset(ema_filter_s *ema_filter);
+void controller_init(controller_s *controller, update_function_p updateIMU,
+                     update_function_p updateLidar,
+                     update_function_p updatePressureTransducers,
+                     update_function_p updateEncoder,
+                     update_function_p updateBatteryVoltage);
+void controller_iter(controller_s *controller);
 
 #endif
