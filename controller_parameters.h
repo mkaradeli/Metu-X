@@ -1,5 +1,8 @@
 #include "pid.h"
 
+#ifndef __CONTROLLER_PARAMETERS_C__
+#define __CONTROLLER_PARAMETERS_C__
+
 pid_parameters_s altitude_controller = {
     1,  // kP
     2,  // kI
@@ -41,3 +44,5 @@ pid_parameters_s motor_controller = {
     10, // integralSaturationMax
     11  // integralSaturationMin
 };
+
+#endif // !__CONTROLLER_PARAMETERS_C__

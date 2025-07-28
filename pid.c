@@ -1,7 +1,7 @@
 #include "pid.h"
 
-void pid_create_init(pid_controller_s *pid, pid_parameters_s *param,
-                     double *ref, double *feedback) {
+void pid_controller_init(pid_controller_s *pid, pid_parameters_s *param,
+                         double *ref, double *feedback) {
   pid->parameter = param;
   pid->ref = ref;
   pid->feedback = feedback;
@@ -15,9 +15,9 @@ void pid_create_init(pid_controller_s *pid, pid_parameters_s *param,
   pid->uD = 0;
   pid->uFF = 0;
   pid->y = 0;
-};
+}
 
-void pid_iterate(pid_controller_s *pid) {
+void pid_controller_iterate(pid_controller_s *pid) {
   // Rate limit the referance
   pid->ref_rateLimited = *pid->ref;
   if (*pid->ref - pid->ref_pre > pid->parameter->rateLimitMax) {
@@ -53,7 +53,7 @@ void pid_iterate(pid_controller_s *pid) {
   pid->error_pre = pid->error;
 };
 
-void pid_reset(pid_controller_s *pid) {
+void pid_controller_reset(pid_controller_s *pid) {
   pid->error_pre = 0;
   pid->ref_pre = 0;
   pid->y = 0;
