@@ -2,7 +2,6 @@
 #include "controller_parameters.h"
 #include "filter.h"
 #include "pid.h"
-#include <sys/types.h>
 
 void point_reset(point_s *point) {
   point->x = 0;
@@ -18,10 +17,6 @@ void euler_reset(euler_s *point) {
 
 void controller_init(controller_s *controller) {
   // init inputs
-  controller->input.euler.roll = 0;
-  controller->input.euler.pitch = 0;
-  controller->input.euler.yaw = 0;
-
   for (int i = 0; i < 4; i++)
     controller->input.quaternion[i] = 0;
   controller->input.lidar = 0;

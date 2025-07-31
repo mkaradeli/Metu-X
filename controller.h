@@ -31,7 +31,7 @@ typedef struct {
 } euler_s;
 
 typedef struct {
-  euler_s euler; // in rad or deg
+  euler_s *euler; // in rad or deg
   double quaternion[4];
 
   double lidar; // in mm
@@ -46,6 +46,7 @@ typedef struct {
 } controller_input_s;
 
 typedef void (*update_function_p)();
+
 typedef struct {
   update_function_p updateIMU;
   update_function_p updateLidar;
