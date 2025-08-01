@@ -13,10 +13,16 @@
 
 #include <stdint.h>
 
+enum distance_unit	{
+	mm
+};
+
 class Lidar {
 	public:
 		Lidar();
 		void FrameHandler(uint8_t* frame, uint8_t size);
+		void SaveConfig();
+		void SetFrameRate(uint16_t rate);
 	private:
 		uint8_t distance = 0;
 		uint8_t strength = 0;

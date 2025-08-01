@@ -6,6 +6,7 @@
  */
 #include "Lidar.hpp"
 #include "tim.h"
+#include "usart.h"
 
 Lidar::Lidar(){
 
@@ -36,4 +37,25 @@ void Lidar::FrameHandler(uint8_t* frame, uint8_t size){
     this->distance = frame[2] | (frame[3] << 8);
     this->strength = frame[4] | (frame[5] << 8);
     this->temperature = frame[6] | (frame[7] << 8);
+
+}
+
+void Lidar::SaveConfig(){
+	uint8_t command[] = {
+			0x5A, 0x04, 0x11, 0x6F
+	};
+	HAL_UART_Transmit(&huart2, command, sizeof(command), 1000);
+}
+
+void Lidar::SetFrameRate(uint16_t rate){
+	if (rate > 1000 && rate < 1){
+		return;
+	}
+	uint8_t command[] = {
+			0x5A, 0x06, 0x03, rate, (rate >> 8), 0x00
+	};
+	for (uint8_t i = 0; i < (sizeof(command)-1); i++){
+		command[sizeof(command)-1] += command[i];
+	}
+	HAL_UART_Transmit(&huart2, command, sizeof(command), 1000);
 }

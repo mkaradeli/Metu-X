@@ -14,6 +14,7 @@ uint8_t usart2_rx_buffer[USART2_RX_BUFFER_SIZE];
 Lidar lidar;
 
 void app_start(){
+	lidar.SetFrameRate(1000);
 	HAL_TIM_Base_Start(&htim23);
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, usart2_rx_buffer, USART2_RX_BUFFER_SIZE);
 }
