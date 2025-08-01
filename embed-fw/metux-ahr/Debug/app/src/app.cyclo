@@ -1,0 +1,4 @@
+../app/src/app.cpp:16:6:void app_start()	1
+../app/src/app.cpp:21:6:void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef*, uint16_t)	2
+../app/src/app.cpp:26:1:void __static_initialization_and_destruction_0()	1
+../app/src/app.cpp:26:1:cpp)	1
