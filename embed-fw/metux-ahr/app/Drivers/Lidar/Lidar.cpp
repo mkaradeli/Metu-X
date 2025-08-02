@@ -13,7 +13,6 @@ Lidar::Lidar(){
 }
 
 void Lidar::FrameHandler(uint8_t* frame, uint8_t size){
-    static uint8_t checksum = 0;
     if (size != LIDAR_FRAME_SIZE){
         this->status = false;
         return; // Invalid frame size
@@ -23,13 +22,13 @@ void Lidar::FrameHandler(uint8_t* frame, uint8_t size){
         return; // Invalid frame header
     }
     for (uint8_t i = 0; i < (LIDAR_FRAME_SIZE - 1); i++){
-        checksum += frame[i];
+        this->checksum += frame[i];
     }
-    if (checksum != frame[LIDAR_FRAME_SIZE - 1]){
+    if (this->checksum != frame[LIDAR_FRAME_SIZE - 1]){
         this->status = false;
         return; // Checksum mismatch
     }
-    checksum = 0;
+    this->checksum = 0;
 
     this->interval_us = micros() - this->flag_us;
     this->flag_us = micros();
@@ -59,3 +58,13 @@ void Lidar::SetFrameRate(uint16_t rate){
 	}
 	HAL_UART_Transmit(&huart2, command, sizeof(command), 1000);
 }
+
+void Lidar::Reset(){
+	uint8_t command[] = {
+			0x5A, 0x04, 0x02, 0x60
+	};
+	uint8_t buffer[15] = {0};
+	HAL_UART_Transmit(&huart2, command, sizeof(command), 1000);
+	HAL_UART_Receive(&huart2, buffer, 5, 10000);
+}
+

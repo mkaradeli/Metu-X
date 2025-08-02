@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app.hpp"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -59,6 +59,22 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define IMU_WAKE_Pin GPIO_PIN_7
 #define IMU_WAKE_GPIO_Port GPIOA
+#define RIGHT_EN_1_Pin GPIO_PIN_8
+#define RIGHT_EN_1_GPIO_Port GPIOD
+#define LEFT_EN_1_Pin GPIO_PIN_9
+#define LEFT_EN_1_GPIO_Port GPIOD
+#define RIGHT_EN_2_Pin GPIO_PIN_10
+#define RIGHT_EN_2_GPIO_Port GPIOD
+#define LEFT_EN_2_Pin GPIO_PIN_11
+#define LEFT_EN_2_GPIO_Port GPIOD
+#define RIGHT_EN_3_Pin GPIO_PIN_6
+#define RIGHT_EN_3_GPIO_Port GPIOC
+#define LEFT_EN_3_Pin GPIO_PIN_7
+#define LEFT_EN_3_GPIO_Port GPIOC
+#define RIGHT_EN_4_Pin GPIO_PIN_8
+#define RIGHT_EN_4_GPIO_Port GPIOC
+#define LEFT_EN_4_Pin GPIO_PIN_9
+#define LEFT_EN_4_GPIO_Port GPIOC
 #define IMU_RST_Pin GPIO_PIN_15
 #define IMU_RST_GPIO_Port GPIOA
 #define IMU_CS_Pin GPIO_PIN_10
