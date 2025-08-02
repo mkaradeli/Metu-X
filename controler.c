@@ -1,7 +1,5 @@
 #include "controller.h"
 #include "controller_parameters.h"
-#include "filter.h"
-#include "pid.h"
 
 void point_reset(point_s *point) {
   point->x = 0;
@@ -47,21 +45,20 @@ void controller_init(controller_s *controller) {
 
   // init pid controllers
   // TODO: pid controlculeri eklenecek ve birbirlerine baglanacak.
-  pid_controller_init(&controller->altitude_controller,
-                      &controller->altitude_control_parameters,
+  pid_controller_init(&controller->altitude_controller, &altitude_controller,
                       &controller->height_command,
                       &controller->position_earth.z);
-  pid_controller_init(
-      &controller->pitch_controller, &controller->attitude_control_parameters,
-      &controller->attitude_command.pitch, &controller->euler.pitch);
-  pid_controller_init(
-      &controller->roll_controller, &controller->attitude_control_parameters,
-      &controller->attitude_command.roll, &controller->euler.roll);
+  pid_controller_init(&controller->pitch_controller, &attitude_controller,
+                      &controller->attitude_command.pitch,
+                      &controller->euler.pitch);
+  pid_controller_init(&controller->roll_controller, &attitude_controller,
+                      &controller->attitude_command.roll,
+                      &controller->euler.roll);
 
   for (int i = 0; i < 4; i++) {
-    pid_controller_init(
-        &controller->motor_controller[i], &controller->motor_control_parameters,
-        &controller->thrust_command[i], &controller->thrust_feedback[i]);
+    pid_controller_init(&controller->motor_controller[i], &motor_controller,
+                        &controller->thrust_command[i],
+                        &controller->thrust_feedback[i]);
   }
 }
 
@@ -113,6 +110,7 @@ void controller_iter(controller_s *controller) {
   controller->call_counter += 1;
 
   controller_sensors_iter(controller);
+  controller->height_command = CONOPS(controller->input.clock);
 
   pid_controller_iterate(&controller->altitude_controller);
   pid_controller_iterate(&controller->pitch_controller);
@@ -137,14 +135,14 @@ void controller_iter(controller_s *controller) {
   controller->outputs.motor_pwm[LEFT] = controller->motor_controller[LEFT].y;
   controller->outputs.motor_pwm[RIGHT] = controller->motor_controller[RIGHT].y;
 
-  controller->outputs.motor_pwm[FRONT] =
-      24 * controller->outputs.motor_voltage[FRONT];
-  controller->outputs.motor_pwm[REAR] =
-      24 * controller->outputs.motor_voltage[REAR];
-  controller->outputs.motor_pwm[LEFT] =
-      24 * controller->outputs.motor_voltage[LEFT];
-  controller->outputs.motor_pwm[RIGHT] =
-      24 * controller->outputs.motor_voltage[RIGHT];
+  controller->outputs.motor_voltage[FRONT] =
+      24 * controller->outputs.motor_pwm[FRONT];
+  controller->outputs.motor_voltage[REAR] =
+      24 * controller->outputs.motor_pwm[REAR];
+  controller->outputs.motor_voltage[LEFT] =
+      24 * controller->outputs.motor_pwm[LEFT];
+  controller->outputs.motor_voltage[RIGHT] =
+      24 * controller->outputs.motor_pwm[RIGHT];
 }
 
 double CONOPS(double time) {

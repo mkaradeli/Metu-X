@@ -1,8 +1,10 @@
-#include "pid.h"
-#include <assert.h>
-
 #ifndef __CONTROLLER_H__
 #define __CONTROLLER_H__
+
+#include "common.h"
+// #include "controller_parameters.h"
+#include "pid.h"
+#include <assert.h>
 
 #define IMU_FREQ 400                   // hz
 #define LIDAR_FREQ 1000                // hz
@@ -21,14 +23,6 @@ static_assert(CONTROLLER_SCHEDULER_FREQ % BATTERY_VOLTAGE_FREQ == 0);
 #define REAR 1
 #define LEFT 2
 #define RIGHT 3
-
-typedef struct {
-  double x, y, z;
-} point_s;
-
-typedef struct {
-  double roll, pitch, yaw;
-} euler_s;
 
 typedef struct {
   euler_s *euler; // in rad or deg

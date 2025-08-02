@@ -1,8 +1,8 @@
-#include "pid.h"
 
+#include "pid.h"
+#include <stdio.h>
 #ifndef __CONTROLLER_PARAMETERS_C__
 #define __CONTROLLER_PARAMETERS_C__
-
 pid_parameters_s altitude_controller = {
     1,  // kP
     2,  // kI

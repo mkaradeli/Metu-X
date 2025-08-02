@@ -1,5 +1,4 @@
 #include "controller.h"
-#include "pid.h"
 #include <stdio.h>
 void dummyFunction() {
   //
@@ -29,7 +28,23 @@ int main() {
                           updateBatteryVoltage_p);
 
   // iter
+  myController.position_earth.z = 10;
+
   controller_iter(&myController);
+  printf("%f,%f,%f\n", *myController.altitude_controller.ref,
+         *myController.altitude_controller.feedback,
+         myController.altitude_controller.y);
+
+  controller_iter(&myController);
+  controller_iter(&myController);
+  printf("%f,%f,%f\n", *myController.altitude_controller.ref,
+         *myController.altitude_controller.feedback,
+         myController.altitude_controller.y);
+  printf("%f\n", myController.altitude_controller.parameter->kP);
+  printFour(myController.thrust_command);
+  printFour(myController.thrust_feedback);
+  printf("%f,%f\n", myController.motor_controller[0].y,
+         *myController.motor_controller[0].ref);
   printFour(myController.outputs.motor_pwm);
   return 0;
 }
