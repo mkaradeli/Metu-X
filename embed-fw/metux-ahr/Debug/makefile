@@ -10,10 +10,11 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include app/src/subdir.mk
+-include app/Drivers/Motor/subdir.mk
 -include app/Drivers/Lidar/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/subdir.mk
--include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
@@ -91,7 +92,7 @@ main-build: metux-ahr.elf secondary-outputs
 
 # Tool invocations
 metux-ahr.elf metux-ahr.map: $(OBJS) $(USER_OBJS) C:\Users\alica\OneDrive\Documents\GitHub\Metu-X\embed-fw\metux-ahr\STM32H730VBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "metux-ahr.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\alica\OneDrive\Documents\GitHub\Metu-X\embed-fw\metux-ahr\STM32H730VBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="metux-ahr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+	arm-none-eabi-g++ -o "metux-ahr.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\alica\OneDrive\Documents\GitHub\Metu-X\embed-fw\metux-ahr\STM32H730VBTX_FLASH.ld" -Wl,-Map="metux-ahr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
