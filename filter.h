@@ -1,6 +1,5 @@
 #ifndef __FILTER_H__
 #define __FILTER_H__
-
 typedef struct {
   double *u;
   double y;

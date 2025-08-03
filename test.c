@@ -1,5 +1,11 @@
 #include "controller.h"
+#include "lookup.h"
 #include <stdio.h>
+
+#define PRINTF(val) printf(#val " = %f\n", val);
+#define PRINTF4(val)                                                           \
+  printf(#val " = %f, %f, %f, %f\n", val[0], val[1], val[2], val[3]);
+
 void dummyFunction() {
   //
   return;
@@ -12,37 +18,37 @@ void printFour(double *vec) {
 }
 
 int main() {
-
   // init
+  lookup_s height_command;
+  lookup_init(&height_command, conops_heigth, conops_velocity,
+              sizeof(conops_heigth));
   controller_s myController;
-
   controller_init(&myController);
 
-  update_function_p updateIMU_p = &dummyFunction;
-  update_function_p updateLidar_p = &dummyFunction;
-  update_function_p updatePressureTransducers_p = &dummyFunction;
-  update_function_p updateEncoder_p = &dummyFunction;
-  update_function_p updateBatteryVoltage_p = &dummyFunction;
-  controller_sensors_init(&myController, updateIMU_p, updateLidar_p,
-                          updatePressureTransducers_p, updateEncoder_p,
-                          updateBatteryVoltage_p);
-
   // iter
-  myController.position_earth.z = 10;
-
-  controller_iter(&myController);
-  printf("%f,%f,%f\n", *myController.altitude_controller.ref,
-         *myController.altitude_controller.feedback,
-         myController.altitude_controller.y);
+  myController.input.lidar = 10;
 
   controller_iter(&myController);
   controller_iter(&myController);
+  controller_iter(&myController);
+  PRINTF(myController.input.lidar);
+  PRINTF(myController.fdbs.position_e.z);
+  PRINTF(*myController.altitude_controller.ref);
+  PRINTF(myController.altitude_controller.ref_rateLimited);
+  PRINTF(myController.altitude_controller.y);
+  PRINTF4(myController.refs.thrust);
+  PRINTF4(myController.fdbs.thrust);
+  PRINTF(myController.motor_controller[0].y);
+  printf("%f,%f,%f\n", *myController.altitude_controller.ref,
+         *myController.altitude_controller.feedback,
+         myController.altitude_controller.uD);
+
   printf("%f,%f,%f\n", *myController.altitude_controller.ref,
          *myController.altitude_controller.feedback,
          myController.altitude_controller.y);
-  printf("%f\n", myController.altitude_controller.parameter->kP);
-  printFour(myController.thrust_command);
-  printFour(myController.thrust_feedback);
+  printf("%f\n", myController.altitude_controller.uP);
+  printFour(myController.refs.thrust);
+  printFour(myController.fdbs.thrust);
   printf("%f,%f\n", myController.motor_controller[0].y,
          *myController.motor_controller[0].ref);
   printFour(myController.outputs.motor_pwm);

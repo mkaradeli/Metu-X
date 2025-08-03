@@ -15,10 +15,14 @@ typedef struct {
   double saturationMin;
   double integralSaturationMax;
   double integralSaturationMin;
+
+  double integralActiveBandMax;
+  double integralActiveBandMin;
+
 } pid_parameters_s;
 
 typedef struct {
-  pid_parameters_s *parameter;
+  const pid_parameters_s *parameter;
   double *ref;
   double *feedback;
   double y;
@@ -35,7 +39,7 @@ typedef struct {
 
 } pid_controller_s;
 
-void pid_controller_init(pid_controller_s *pid, pid_parameters_s *param,
+void pid_controller_init(pid_controller_s *pid, const pid_parameters_s *param,
                          double *ref, double *feedback);
 void pid_controller_iterate(pid_controller_s *pid);
 void pid_controller_reset(pid_controller_s *pid);

@@ -3,14 +3,16 @@
 #define __LOGGER_H__
 
 #include "common.h"
+#include <assert.h>
 #include <stddef.h>
+#include <sys/types.h>
 
-#define LOG_BUFFER_SIZE 1024
+#define LOG_BUFFER_SIZE 128000
 
 typedef struct {
   unsigned int timestamp;
   euler_s euler;
-  double lidar; // in mm
+  u_int8_t lidar; // in mm
 
   double manifoldPress;  // in kPa
   double nozzlePress[4]; // in kPa
@@ -19,8 +21,7 @@ typedef struct {
   double battery_voltage; // in V
 
   double motor_pwm[4];
-
-} LogEntry_s;
+} LogEntry_s; // Size 153 bytes
 
 typedef struct {
   unsigned int head;
