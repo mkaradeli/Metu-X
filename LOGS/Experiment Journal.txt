@@ -1,0 +1,43 @@
+Experiment 0000:
+	Controller C/C++ source code generated on : Thu Nov 20 13:38:23 2025
+	shaft free
+	no speed measurement
+	step duty
+	current measurement faulty
+Experiment 0001:
+	same as Experiment 0000
+
+Experiment 0004:
+	current measured
+	shaft free
+	controller at Exp0000
+
+
+Experiment 0006:
+	current measured
+	pos measured from but
+
+Experiment 0007:
+	shaft not free
+	current measured
+	shaft pos measured from butt
+Experiment 0010:
+	encoder but is raw encoder pos
+
+Experiment 0011:
+	sinosodial duty
+
+FROM EXP 45-52
+	data is continuous 
+	0.6 steps with free and zero velocity 
+FROM EXP 53
+	step amp 1
+
+At same point its
+	sine of 0.6
+Then
+	sine of 1
+Then 
+	sine of 0.6 and stalled and 10hz
+Then
+	sine of 1 and 10hz
