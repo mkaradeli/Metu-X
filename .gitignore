@@ -81,3 +81,15 @@ codegen/
 
 # Cloud based storage dotfile
 .MATLABDriveTag
+
+
+# Simulink Coder / Embedded Coder
+*_ert_rtw/
+*_grt_rtw/
+*_rapid_accel_rtw/
+*_accel_rtw/
+codegen_reports/
+html/
+reports/
+.DS_Store
+Resources/

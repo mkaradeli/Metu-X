@@ -8,7 +8,7 @@ import log_processor_lib
 
 filename = 'log0010.bin'
 filename = 'log0054.bin'
-filename = 'log0064.bin'
+# filename = 'log0064.bin'
 
 myLog = log_processor_lib.log_processor(filename)
 
@@ -43,5 +43,7 @@ ax[2].set_ylabel("duty")
 # plt.figure(2)
 # plt.plot(df["motor_duty"])
 # plt.plot(df["encoder_1"])
+
+# myLog.safe_csv()
 
 plt.show()

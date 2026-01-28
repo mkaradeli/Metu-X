@@ -124,7 +124,7 @@ ax[1].set_yticks([0,90,180,270,360])
 ax_amp = plt.axes([0.2, 0.15, 0.7, 0.03])   # [left, bottom, width, height]
 
 ax_phase = plt.axes([0.2, 0.08, 0.7, 0.03])
-amp0 = 120
+amp0 = 0
 phase0 = 2019
 slider_amp = Slider(ax_amp, "amp", 0, 400, valinit=amp0)
 
