@@ -15,7 +15,6 @@ T = readtable(filename, 'Delimiter', ',', 'TextType', 'string');
 %% Base time
 t = T.timestamp(:);
 Ts_main = mean(diff(t));
-
 ts = struct();
 
 %% --------- Scalar signals ---------

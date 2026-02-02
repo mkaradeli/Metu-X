@@ -17,7 +17,7 @@ for filename in dirlist:
 		logName = filename
 # logName = "log0000.bin"
 
-# logName = "log0149.bin"
+# logName = "log0237.bin"
 if logName:
 	print(logName)
 	shutil.copy(os.path.join(sdFolder,logName), "./")
