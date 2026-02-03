@@ -434,11 +434,11 @@ class  log_processor():
 			self.currentTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/8, 8 * self.dataLen)
 			# encoder = np.concat(self.df["encoder_48"].to_numpy())
 
-			self.valveAngleKalman = np.concat(self.df["valveAngleKalman"].to_numpy())
-			self.valveAngle = np.concat(self.df["valveAngle"].to_numpy())
-			self.valveVelocity = np.concat(self.df["valveVelocity"].to_numpy())
-			self.current_subsample = np.concat(self.df["current_subsample"].to_numpy())
-			self.duty_subsample = np.concat(self.df["duty_subsample"].to_numpy())
+			self.valveAngleKalman = np.concatenate(self.df["valveAngleKalman"].to_numpy())
+			self.valveAngle = np.concatenate(self.df["valveAngle"].to_numpy())
+			self.valveVelocity = np.concatenate(self.df["valveVelocity"].to_numpy())
+			self.current_subsample = np.concatenate(self.df["current_subsample"].to_numpy())
+			self.duty_subsample = np.concatenate(self.df["duty_subsample"].to_numpy())
 
 
 

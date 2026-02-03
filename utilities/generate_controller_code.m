@@ -84,8 +84,12 @@ copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 delete(fullfile(destinationFolder, 'src', "ert_main.cpp"));
 
 
-
-copyfile(fullfile(destinationFolder), fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/metux-test/app/Controller/"))
+if ~exist(fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/metux-test/app/Controller/"), 'dir')
+    copyfile(fullfile(destinationFolder), fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/metux-test/app/Controller/"))
+elseif ~exist(fullfile(pwd,"../../Metu-X-stm32/app/"), 'dir')
+    copyfile(fullfile(destinationFolder), fullfile(pwd,"../../Metu-X-stm32/app/Controller/"))
+    
+end
 
 end
 
