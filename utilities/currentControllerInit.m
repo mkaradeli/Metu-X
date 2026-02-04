@@ -19,8 +19,8 @@ f_speed = 2*pi*100;
 J_ = 1.6640902592735392E-5;
 Km_ = 0.048589858612573242;
 b_ = 0.00015997910300577089;
-SatMax = 10;
-SatMin = -10;
+SatMax = 15;
+SatMin = -15;
 Ts = 1/1000;
 RateLimiterMax = 2e5;
 RateLimiterMin = -2e5;
@@ -39,19 +39,21 @@ clear("J_","Km_","b_");
 
 f_position = 2*pi*20;
 Kp = f_position/2;
-SatMax = 3000;
-SatMin = -3000;
-RateLimiterMax = 3000;
-RateLimiterMin = -3000;
+Kff = 0;
+SatMax = 2400;
+SatMin = -2400;
+RateLimiterMax = 2400;
+RateLimiterMin = -2400;
 Ts = 1/1000;
 
 controllerGains.position.Kp = single(Kp);
+controllerGains.position.Kff = single(Kff);
 controllerGains.position.SatMax = single(SatMax); % deg/s
 controllerGains.position.SatMin = single(SatMin); % deg/s
 controllerGains.position.RateLimiterMax = single(RateLimiterMax); % deg/s
 controllerGains.position.RateLimiterMin = single(RateLimiterMin); % deg/s
 controllerGains.position.Ts = double(Ts);
-clear("SatMin", "SatMax", "Kp", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
+clear("SatMin", "SatMax", "Kp","Kff", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
 
 
 controllerGains = Simulink.Parameter(controllerGains);
