@@ -93,3 +93,4 @@ html/
 reports/
 .DS_Store
 
+.sublime-workspace
