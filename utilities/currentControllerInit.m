@@ -74,3 +74,10 @@ PI_debug.Elements(2).Dimensions = 1;
 PI_debug.Elements(3).Name = 'ref_rate_limited';
 PI_debug.Elements(3).DataType = 'single';
 PI_debug.Elements(3).Dimensions = 1;
+
+
+% controller_modes = Simulink.Parameter(controller_modes);
+controller_mode = controller_modes.DISABLE;
+controller_mode = Simulink.Parameter(controller_mode);
+controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
+controller_mode.CoderInfo.Identifier = "controller_mode";

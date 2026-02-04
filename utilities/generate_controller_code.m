@@ -1,4 +1,6 @@
 function generate_controller_code()
+
+
 %generate_controller_code
 
 % parametreleri workspace'e ekle
@@ -9,12 +11,15 @@ currentControllerInit;
 % controllerGains değişkenini workspace'e kopyala
 assignin('base', 'controllerGains', controllerGains);
 assignin('base', 'PI_debug', PI_debug);
+assignin('base', 'controller_mode', controller_mode);
 
 %% Akım Kontrolcüsü
 
 % kontrolcü parametreleri dışa aktarılıyor.
 controllerGains.CoderInfo.StorageClass = "ImportedExtern";
 controllerGains.CoderInfo.Identifier = "currentControllerGains";
+controller_mode.CoderInfo.StorageClass = "ImportedExtern";
+
 
 currentController = 'currentController';
 % if(~bdIsLoaded(currentController))
@@ -34,6 +39,8 @@ slbuild(currentController);
 % aktarılmayacak.
 controllerGains.CoderInfo.StorageClass = "ExportedGlobal";
 controllerGains.CoderInfo.Identifier = "currentControllerGains";
+controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
+
 
 positionController = 'positionController';
 % if(~bdIsLoaded(positionController))
