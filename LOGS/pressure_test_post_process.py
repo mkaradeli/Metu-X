@@ -1,26 +1,224 @@
+'''
 # from copy import deepcopy
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from log_processor_lib import log_processor
 import os
-
+import matplotlib.cm as cm
 import sys
 
+# --- AYARLAR ---
+TRIM_COUNT = 1100  # 1kHz'de 1.1 saniye = 1100 veri noktası
 
-# from matplotlib.widgets import Slider
+# --- Dosya Listesi ---
+all_files = sorted([f for f in os.listdir(".") if "log" in f and f.endswith(".bin")])
+target_files = [sys.argv[1]] if len(sys.argv) == 2 else all_files
 
 
-dirlist = sorted(os.listdir("."))
-# logName = ""
+# --- Plot Kurulumu ---
+fig = plt.figure(figsize=(12, 10))
+ax = fig.add_subplot(projection='3d')
+fig.canvas.manager.set_window_title(f"Trimmed Analysis (First/Last {TRIM_COUNT} samples cut)")
+colors = cm.jet(np.linspace(0, 1, len(target_files)))
+
+print(f"İşleniyor: {len(target_files)} dosya. (Baştan/Sondan {TRIM_COUNT} veri siliniyor)")
+
+for idx, filename in enumerate(target_files):
+    try:
+        myLog = log_processor(filename=filename)
+        
+        # 1. Verileri Çek
+        mp = myLog.df["manifold_pressure"].to_numpy()
+        np_p = myLog.df["nozzle_pressure"].to_numpy()
+        # Encoder 4 kat hızlıysa senkronize et (Yoksa zaman kayar)
+        ang = myLog.valveAngle[0::4] 
+        
+        # 2. Boyut Eşitle (Array Mismatch Hatasına Karşı)
+        min_len = min(len(mp), len(np_p), len(ang))
+        
+        # 3. Güvenlik Kontrolü (Veri kesilince elde bir şey kalıyor mu?)
+        if min_len <= (2 * TRIM_COUNT):
+            print(f"Skipping {filename}: Veri çok kısa, kesilemiyor.")
+            continue
+            
+        # 4. Kesme İşlemi (Slicing) ve Eksen Atama
+        # [1100 : -1100] -> Baştan 1100 geç, sondan 1100 geri gel.
+        x = mp[TRIM_COUNT : min_len - TRIM_COUNT]
+        y = ang[TRIM_COUNT : min_len - TRIM_COUNT]
+        z = x - np_p[TRIM_COUNT : min_len - TRIM_COUNT] # Delta P
+        
+        # 5. Çizim
+        ax.plot(x, y, z, color=colors[idx], linewidth=0.5, alpha=0.6, label=filename)
+
+    except Exception as e:
+        print(f"HATA - {filename}: {e}")
+
+# --- Görsel Ayarlar ---
+ax.set_xlabel("Manifold Pressure [Bar]")
+ax.set_ylabel("Valve Angle [Deg]")
+ax.set_zlabel("Delta P [Bar]")
+ax.grid(True)
+
+if len(target_files) < 20:
+    ax.legend(fontsize='x-small', loc='upper right')
+
+plt.tight_layout()
+plt.show()
+'''
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from log_processor_lib import log_processor
+import os
+import matplotlib.cm as cm
+import sys
+
+# --- AYARLAR ---
+TRIM_COUNT = 1100  # 1kHz'de 1.1 saniye = 1100 veri noktası
+
+# --- KATSAYILAR (Cubic Weighted Fit) ---
+# Delta P = f(Pm, Theta)
+# Pm = Manifold Pressure (x), Theta = Valve Angle (y)
+A = 224.4800502031
+B = 0.7818054101
+C = -1.3815825788
+D =  0.0000193782
+E = 0.0026307555
+F = -0.0020704538
+G = 0.0000000015
+H = -0.0000014546
+I = -0.0000000322
+J = 0.0000014008
+
+# --- Dosya Listesi ---
+all_files = sorted([f for f in os.listdir(".") if "log" in f and f.endswith(".bin")])
+target_files = [sys.argv[1]] if len(sys.argv) == 2 else all_files
+
+# --- Plot Kurulumu ---
+fig = plt.figure(figsize=(12, 10))
+ax = fig.add_subplot(projection='3d')
+fig.canvas.manager.set_window_title(f"Trimmed Analysis & Cubic Fit Surface")
+colors = cm.jet(np.linspace(0, 1, len(target_files)))
+
+print(f"İşleniyor: {len(target_files)} dosya. (Baştan/Sondan {TRIM_COUNT} veri siliniyor)")
+
+# Yüzey plotu için limitleri tutacak değişkenler (Sonsuz ile başlatıyoruz)
+global_min_mp, global_max_mp = np.inf, -np.inf
+global_min_ang, global_max_ang = np.inf, -np.inf
+has_data = False
+
+for idx, filename in enumerate(target_files):
+    try:
+        myLog = log_processor(filename=filename)
+        
+        # 1. Verileri Çek
+        mp = myLog.df["manifold_pressure"].to_numpy()
+        np_p = myLog.df["nozzle_pressure"].to_numpy()
+        # Encoder 4 kat hızlıysa senkronize et
+        ang = myLog.valveAngle[0::4] 
+        
+        # 2. Boyut Eşitle
+        min_len = min(len(mp), len(np_p), len(ang))
+        
+        # 3. Güvenlik Kontrolü
+        if min_len <= (2 * TRIM_COUNT):
+            print(f"Skipping {filename}: Veri çok kısa, kesilemiyor.")
+            continue
+            
+        # 4. Kesme İşlemi (Slicing) ve Eksen Atama
+        x = mp[TRIM_COUNT : min_len - TRIM_COUNT]       # Pm
+        y = ang[TRIM_COUNT : min_len - TRIM_COUNT]      # Theta
+        z = x - np_p[TRIM_COUNT : min_len - TRIM_COUNT] # Delta P
+        
+        # Global limitleri güncelle (Surface plot aralığı için)
+        if len(x) > 0:
+            has_data = True
+            global_min_mp = min(global_min_mp, x.min())
+            global_max_mp = max(global_max_mp, x.max())
+            global_min_ang = min(global_min_ang, y.min())
+            global_max_ang = max(global_max_ang, y.max())
+
+        # 5. Çizim (Scatter/Line)
+        ax.plot(x, y, z, color=colors[idx], linewidth=0.5, alpha=0.6, label=filename)
+
+    except Exception as e:
+        print(f"HATA - {filename}: {e}")
+
+# --- YÜZEY (SURFACE) PLOT ---
+if has_data:
+    print("Yüzey modeli oluşturuluyor...")
+    
+    # Veri aralığında bir grid oluştur (Resolution: 50x50)
+    # Biraz pay bırakmak için %5 marj ekleyelim
+    margin_mp = (global_max_mp - global_min_mp) * 0.05
+    margin_ang = (global_max_ang - global_min_ang) * 0.05
+    
+    pm_range = np.linspace(global_min_mp - margin_mp, global_max_mp + margin_mp, 50)
+    theta_range = np.linspace(global_min_ang - margin_ang, global_max_ang + margin_ang, 50)
+    
+    Pm_grid, Theta_grid = np.meshgrid(pm_range, theta_range)
+    
+    # Denklem: Delta P hesapla
+    # Python'da üs alma operatörü ** kullanır
+    Z_surface = (A 
+                 + B * Pm_grid 
+                 + C * Theta_grid 
+                 + D * (Pm_grid**2) 
+                 + E * (Theta_grid**2) 
+                 + F * (Pm_grid * Theta_grid) 
+                 + G * (Pm_grid**3) 
+                 + H * (Theta_grid**3) 
+                 + I * (Pm_grid**2 * Theta_grid) 
+                 + J * (Pm_grid * Theta_grid**2))
+    
+    # Yüzeyi çizdir
+    surf = ax.plot_surface(Pm_grid, Theta_grid, Z_surface, 
+                           cmap='viridis',    # Verilerden ayrışması için farklı renk
+                           alpha=0.4,         # Şeffaflık (alttaki veriyi görmek için)
+                           edgecolor='none',  # Grid çizgilerini kaldır
+                           rstride=1, cstride=1,
+                           antialiased=True)
+    
+    # Renk barı (Opsiyonel, yüzeyin değerlerini görmek için)
+    # fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10, label='Model Delta P')
+
+# --- Görsel Ayarlar ---
+ax.set_xlabel("Manifold Pressure (Pm) [Bar]")
+ax.set_ylabel("Valve Angle (Theta) [Deg]")
+ax.set_zlabel("Delta P [Bar]")
+ax.set_title(f"Data vs Cubic Fit Model ($R^2$: 0.98)")
+ax.grid(True)
+
+# Görüş açısını ayarla (Opsiyonel - veriye göre değiştirebilirsin)
+ax.view_init(elev=30, azim=-60)
+
+if len(target_files) < 20:
+    ax.legend(fontsize='x-small', loc='upper right')
+
+plt.tight_layout()
+plt.show()
 
 
-for _ in dirlist:
-	if "log" in _ and ".bin" in _:
-		filename = _
-# filename = 'log0260.bin'
-if len(sys.argv) == 2:
-	filename = sys.argv[1]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 print(filename)
 # filename = "log"
 myLog = log_processor(filename=filename)
@@ -31,11 +229,9 @@ myLog = log_processor(filename=filename)
 # exit()
 # print(myLog.df.)
 # aaa = np.diff(myLog.df.angleRaw, append=[myLog.df.angleRaw[myLog.dataLen-1]])
+'''
 
-
-
-
-
+'''
 fig,ax= plt.subplots(3,sharex=True)
 fig.canvas.manager.set_window_title(filename) 
 
@@ -91,3 +287,4 @@ ax.set_zlabel("delta")
 plt.show()
 
 print(myLog.df.axes)
+'''
