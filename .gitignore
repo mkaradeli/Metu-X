@@ -94,3 +94,7 @@ reports/
 .DS_Store
 
 *.sublime-workspace
+
+
+# python cache
+*.pyc
