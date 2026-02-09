@@ -34,7 +34,7 @@ myLog = log_processor(filename=filename)
 
 
 
-
+print(myLog.valveVelocity)
 
 fig,ax= plt.subplots(4,sharex=True)
 fig.canvas.manager.set_window_title(filename) 

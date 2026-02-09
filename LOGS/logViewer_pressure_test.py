@@ -32,6 +32,10 @@ myLog = log_processor(filename=filename)
 # print(myLog.df.)
 # aaa = np.diff(myLog.df.angleRaw, append=[myLog.df.angleRaw[myLog.dataLen-1]])
 
+for filename in dirlist:
+	if "log" in filename and ".bin" in filename:
+		log_processor(filename)
+
 
 
 

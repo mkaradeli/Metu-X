@@ -421,6 +421,23 @@ class  log_processor():
     			"nozzle_pressure"
 			]
 
+			self.columns_scalar = [
+				"timestamp",
+				"current_measured",
+				"current_demand",
+				# "valveAngleKalman",
+    			# "valveAngle",
+    			# "valveVelocity",
+    			# "current_subsample",
+    			# "duty_subsample",
+    			"speedDemand",
+    			"pos_ref",
+    			"pos_ref_rate_limited",
+    			"speed_ref_rate_limited",
+    			"manifold_pressure",
+    			"nozzle_pressure"
+			]
+
 
 			records = [struct.unpack(self.struct_format,self.binary[i:i+self.struct_size]) for i in range(0,len(self.binary),self.struct_size)]
 			records = [[*record[:3], list(record[3:3+4]), list(record[7:7+4]), list(record[11:11+4]), list(record[15:15+8]), list(record[23:23+8]), *record[31:31+6]] for record in records]
@@ -429,6 +446,7 @@ class  log_processor():
 			self.dataLen = self.df.__len__()
 			self.df["timestamp"] -= self.df["timestamp"][0]
 			self.df["timestamp"] *= 1e-6
+
 
 			self.positionTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/4, 4 * self.dataLen)
 			self.currentTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/8, 8 * self.dataLen)
@@ -440,6 +458,10 @@ class  log_processor():
 			self.current_subsample = np.concatenate(self.df["current_subsample"].to_numpy())
 			self.duty_subsample = np.concatenate(self.df["duty_subsample"].to_numpy())
 
+			self.df_8kHz = pd.DataFrame(zip(self.currentTime,self.current_subsample,self.duty_subsample), columns = ['timestamp','current_subsample', 'duty_subsample'])
+			self.df_4kHz = pd.DataFrame(zip(self.positionTime,self.valveAngleKalman, self.valveAngle, self.valveVelocity), columns = ['timestamp','valveAngleKalman','valveAngle','valveVelocity'])
+			
+			
 
 
 
@@ -451,11 +473,19 @@ class  log_processor():
 		else:
 			print("DONT KNOW formatID")
 			exit()
-		self.safe_csv()
+		self.save_csv()
 
-	def safe_csv(self):
-		self.df.to_csv(self.filename[:-3] + "csv",index=False)
+	def save_csv(self):
+		try:
+			self.df.to_csv(self.filename[:-3] + "csv",columns=self.columns_scalar,index=False)
+		except:
+			self.df.to_csv(self.filename[:-3] + "csv",index=False)
 
+		try:
+			self.df_4kHz.to_csv(self.filename[:-4] + "_4kHz.csv", index=False)
+			self.df_8kHz.to_csv(self.filename[:-4] + "_8kHz.csv",index=False)
+		except:
+			pass
 
 # filename = 'log0064.bin'
 
