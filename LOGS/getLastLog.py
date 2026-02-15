@@ -9,7 +9,7 @@ if not os.path.exists(sdFolder):
 		exit()
 
 dirlist = sorted(os.listdir(sdFolder))
-logName = ""
+# logName = "log_0437.bin"
 
 
 for filename in dirlist:
@@ -17,7 +17,7 @@ for filename in dirlist:
 		logName = filename
 # logName = "log0000.bin"
 
-# logName = "log0237.bin"
+# logName = "log0378.bin"
 if logName:
 	print(logName)
 	shutil.copy(os.path.join(sdFolder,logName), "./")

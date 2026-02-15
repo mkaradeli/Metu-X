@@ -14,7 +14,8 @@ controllerGains.current.SatMin = single(SatMin);
 controllerGains.current.Ts = double(Ts);
 
 %% SPEED CONTROLLER (GÜNCELLENDİ)
-f_speed = 2*pi*100;
+f_speed = 2*pi*300;
+zeta = 0.707;
 
 % --- YENİ MODEL DEĞERLERİ (Görselden Alındı) ---
 % Workspace görselindeki (image_c17581) güncel değerler:
@@ -22,6 +23,7 @@ J_      = 1.6640902592735392E-5;
 Km_     = 0.050266292709408661;      % Yeni Km değeri
 bv_     = 7.412339946963472E-5;      % Yeni Viskoz Sürtünme (bv)
 Fs_max_ = 0.0054517494481315263;     % Yeni Statik Sürtünme (Coulomb)
+
 
 % --- STATİK SÜRTÜNME KOMPANZASYONU ---
 % Basıncı disturbance olarak bıraktık ama Statik Sürtünme (Fs_max)
@@ -33,18 +35,18 @@ Fs_max_ = 0.0054517494481315263;     % Yeni Statik Sürtünme (Coulomb)
 SatMax = 15;
 SatMin = -15;
 Ts = 1/1000;
-RateLimiterMax = 2e5;
-RateLimiterMin = -2e5;
+RateLimiterMax = 2e15;
+RateLimiterMin = -2e15;
 
 % SpeedGains = struct();
 
 % Kp Hesabı: Atalet (J) ve yeni Km'ye bağlı.
-controllerGains.speed.Kp = single(J_ / Km_ * f_speed * pi/180);
-
+controllerGains.speed.Kp = single(J_ / Km_ * f_speed);
+controllerGains.speed.Kp
 % Ki Hesabı: Viskoz (bv) + Statik (Fs) toplam direncine göre hesaplandı.
 % Bu sayede integral, hem sürtünmeyi hem de basınç yükünü (disturbance) yenecek güce ulaşır.
-controllerGains.speed.Ki = single(bv_ / Km_ * f_speed * pi/180);
-
+controllerGains.speed.Ki = single(bv_ / Km_ * f_speed);
+controllerGains.speed.Ki
 controllerGains.speed.SatMax = single(SatMax);
 controllerGains.speed.SatMin = single(SatMin);
 controllerGains.speed.RateLimiterMax = single(RateLimiterMax);
@@ -52,12 +54,12 @@ controllerGains.speed.RateLimiterMin = single(RateLimiterMin);
 controllerGains.speed.Ts = Ts;
 
 % Geçici değişkenleri temizle
-clear("J_", "Km_", "bv_", "Fs_max_", "b_eq", "b_total");
+clear("J_", "Km_", "bv_", "Fs_max_");
 
 %% POSITION CONTROLLER
 f_position = 2*pi*20;
 Kp = f_position/2;
-Kff = 0;
+Kff = 0.8;
 SatMax = 2400;
 SatMin = -2400;
 RateLimiterMax = 2400;
@@ -69,8 +71,9 @@ controllerGains.position.SatMax = single(SatMax); % deg/s
 controllerGains.position.SatMin = single(SatMin); % deg/s
 controllerGains.position.RateLimiterMax = single(RateLimiterMax); % deg/s
 controllerGains.position.RateLimiterMin = single(RateLimiterMin); % deg/s
-controllerGains.position.Ts = double(Ts);
+controllerGains.position.Ts = double(Ts)
 clear("SatMin", "SatMax", "Kp","Kff", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
+
 
 %% BUS DEFINITIONS & CODER INFO
 controllerGains = Simulink.Parameter(controllerGains);

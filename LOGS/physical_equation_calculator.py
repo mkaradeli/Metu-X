@@ -204,7 +204,7 @@ import matplotlib.cm as cm
 # ==========================================
 # KULLANICI AYARLARI (LİSTE MODU)
 # ==========================================
-TRIM_COUNT = 5           
+TRIM_COUNT = 700           
 THETA_MAX = 1080.0         
 
 # HANGİ DATALAR ÇİZİLSİN? (LİSTE FORMATI)
@@ -212,7 +212,8 @@ THETA_MAX = 1080.0
 # [0, 2]      -> Sadece 0. ve 2. sıradaki dosyaları çizer.
 # [1]         -> Sadece 1. dosyayı çizer.
 # []          -> BOŞ bırakırsan HEPSİNİ çizer.
-TARGET_LOG_INDICES = []  # <--- BURAYI LİSTE OLARAK DÜZENLE
+TARGET_LOG_INDICES = [187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198]  # <--- BURAYI LİSTE OLARAK DÜZENLE
+
 
 # ==========================================
 # 1. FİZİKSEL MODEL
@@ -254,39 +255,39 @@ print("-" * 50)
 print("\nBütün veriler model eğitimi için işleniyor...")
 
 for idx, filename in enumerate(files):
-    try:
-        myLog = log_processor(filename=filename)
-        
-        mp = myLog.df["manifold_pressure"].to_numpy()
-        np_p = myLog.df["nozzle_pressure"].to_numpy()
-        ang = myLog.valveAngle[0::4] 
-        
-        min_len = min(len(mp), len(np_p), len(ang))
-        if min_len <= (2 * TRIM_COUNT): continue
-            
-        mp_trim = mp[TRIM_COUNT : min_len - TRIM_COUNT]
-        ang_trim = ang[TRIM_COUNT : min_len - TRIM_COUNT]
-        np_trim = np_p[TRIM_COUNT : min_len - TRIM_COUNT]
-        dp_trim = mp_trim - np_trim
-        
-        # 1. Fitting Havuzu (Model hassasiyeti için HER ZAMAN tüm veriyi kullanırız)
-        combined_Pm.append(mp_trim)
-        combined_Theta.append(ang_trim)
-        combined_DeltaP.append(dp_trim)
-        
-        # 2. Plotting Havuzu
-        step = 10 
-        log_trajectories.append({
-            'Pm': mp_trim[::step],
-            'Theta': ang_trim[::step],
-            'DeltaP': dp_trim[::step],
-            'Name': f"Log {idx}",
-            'Index': idx
-        })
-        
-    except Exception as e:
-        print(f"Dosya hatası ({filename}): {e}")
+    if not  ((len(TARGET_LOG_INDICES) == 0) or (idx in TARGET_LOG_INDICES)):
         continue
+    print(idx, filename)
+    myLog = log_processor(filename=filename)
+    
+    mp = myLog.df["manifold_pressure"].to_numpy()
+    np_p = myLog.df["nozzle_pressure"].to_numpy()
+    ang = myLog.valveAngle[0::4] 
+    
+    min_len = min(len(mp), len(np_p), len(ang))
+    if min_len <= (2 * TRIM_COUNT): continue
+        
+    mp_trim = mp[TRIM_COUNT : min_len - TRIM_COUNT]
+    ang_trim = ang[TRIM_COUNT : min_len - TRIM_COUNT]
+    np_trim = np_p[TRIM_COUNT : min_len - TRIM_COUNT]
+    dp_trim = mp_trim - np_trim
+    
+    # 1. Fitting Havuzu (Model hassasiyeti için HER ZAMAN tüm veriyi kullanırız)
+    combined_Pm.append(mp_trim)
+    combined_Theta.append(ang_trim)
+    combined_DeltaP.append(dp_trim)
+    
+    # 2. Plotting Havuzu
+    step = 10 
+    log_trajectories.append({
+        'Pm': mp_trim[::step],
+        'Theta': ang_trim[::step],
+        'DeltaP': dp_trim[::step],
+        'Name': f"Log {idx}",
+        'Index': idx
+    })
+        
+
 
 X_data = np.concatenate(combined_Pm)
 Y_data = np.concatenate(combined_Theta)
@@ -300,119 +301,115 @@ p0_guess = [0.90, 1.0, 2.0]
 lower_bounds = [0.0, 0.0, 0.5]
 upper_bounds = [0.999, 100.0, 5.0]
 
-try:
-    popt, pcov = curve_fit(valve_loss_model, input_data, Z_data, p0=p0_guess, bounds=(lower_bounds, upper_bounds))
-    
-    C_eff, alpha_val, k_val = popt
-    
-    # Global R2
-    Z_pred_global = valve_loss_model(input_data, *popt)
-    r2_val = r2_score(Z_data, Z_pred_global)
-    
-    print("\n" + "="*60)
-    print(f"MODEL SONUÇLARI (R² = {r2_val:.5f})")
-    print(f"C_eff : {C_eff:.4f} | Alpha : {alpha_val:.4f} | k : {k_val:.4f}")
-    print("="*60)
+popt, pcov = curve_fit(valve_loss_model, input_data, Z_data, p0=p0_guess, bounds=(lower_bounds, upper_bounds))
 
-    # ==========================================
-    # 4. GÖRSELLEŞTİRME (LİSTE FİLTRELİ)
-    # ==========================================
-    fig = plt.figure(figsize=(18, 8))
-    
-    # --- PLOT 1: MODEL SURFACE + SEÇİLEN DATALAR ---
-    ax1 = fig.add_subplot(121, projection='3d')
-    
-    # Grid
-    max_pm = X_data.max()
-    pm_grid = np.linspace(0, max_pm * 1.05, 50) 
-    theta_grid = np.linspace(0, THETA_MAX, 50)
-    X_surf, Y_surf = np.meshgrid(pm_grid, theta_grid)
-    
-    Z_surf = valve_loss_model((X_surf.ravel(), Y_surf.ravel()), *popt)
-    Z_surf = Z_surf.reshape(X_surf.shape)
+C_eff, alpha_val, k_val = popt
+k_val = 2
+popt[2] = 2
 
-    # Yüzey (Surface)
-    surf = ax1.plot_surface(X_surf, Y_surf, Z_surf, cmap='viridis', 
-                           edgecolor='none', alpha=0.3)
+# Global R2
+Z_pred_global = valve_loss_model(input_data, *popt)
+r2_val = r2_score(Z_data, Z_pred_global)
+
+print("\n" + "="*60)
+print(f"MODEL SONUÇLARI (R² = {r2_val:.5f})")
+print(f"C_eff : {C_eff:.4f} | Alpha : {alpha_val:.4f} | k : {k_val:.4f}")
+print("="*60)
+
+# ==========================================
+# 4. GÖRSELLEŞTİRME (LİSTE FİLTRELİ)
+# ==========================================
+fig = plt.figure(figsize=(18, 8))
+
+# --- PLOT 1: MODEL SURFACE + SEÇİLEN DATALAR ---
+ax1 = fig.add_subplot(121, projection='3d')
+
+# Grid
+max_pm = X_data.max()
+pm_grid = np.linspace(0, max_pm * 1.05, 50) 
+theta_grid = np.linspace(0, THETA_MAX, 50)
+X_surf, Y_surf = np.meshgrid(pm_grid, theta_grid)
+
+Z_surf = valve_loss_model((X_surf.ravel(), Y_surf.ravel()), *popt)
+Z_surf = Z_surf.reshape(X_surf.shape)
+
+# Yüzey (Surface)
+surf = ax1.plot_surface(X_surf, Y_surf, Z_surf, cmap='viridis', 
+                       edgecolor='none', alpha=0.3)
+
+# Seçilen Dataları Çiz
+# Renk paleti oluştur (Seçilen sayısı kadar renk üret)
+selected_trajs = [t for t in log_trajectories if (len(TARGET_LOG_INDICES)==0) or (t['Index'] in TARGET_LOG_INDICES)]
+colors = cm.jet(np.linspace(0, 1, len(selected_trajs)))
+
+for i, traj in enumerate(selected_trajs):
+    ax1.plot(traj['Pm'], traj['Theta'], traj['DeltaP'], 
+            color=colors[i], linewidth=2, label=f"Log {traj['Index']}")
     
-    # Seçilen Dataları Çiz
-    # Renk paleti oluştur (Seçilen sayısı kadar renk üret)
-    selected_trajs = [t for t in log_trajectories if (len(TARGET_LOG_INDICES)==0) or (t['Index'] in TARGET_LOG_INDICES)]
-    colors = cm.jet(np.linspace(0, 1, len(selected_trajs)))
+    # Başlangıç noktası
+    ax1.scatter(traj['Pm'][0], traj['Theta'][0], traj['DeltaP'][0], color=colors[i], s=20)
+
+ax1.set_xlabel('Manifold P')
+ax1.set_ylabel('Theta')
+ax1.set_zlabel('Delta P')
+
+title_str = "Tüm Veriler" if len(TARGET_LOG_INDICES) == 0 else f"Seçilen Loglar: {TARGET_LOG_INDICES}"
+ax1.set_title(f"Fiziksel Model ve {title_str}")
+
+# Legend (Eğer çok fazla değilse göster)
+if len(selected_trajs) < 10:
+    ax1.legend()
     
-    for i, traj in enumerate(selected_trajs):
-        ax1.plot(traj['Pm'], traj['Theta'], traj['DeltaP'], 
-                color=colors[i], linewidth=2, label=f"Log {traj['Index']}")
-        
-        # Başlangıç noktası
-        ax1.scatter(traj['Pm'][0], traj['Theta'][0], traj['DeltaP'][0], color=colors[i], s=20)
+ax1.view_init(elev=25, azim=135)
 
-    ax1.set_xlabel('Manifold P')
-    ax1.set_ylabel('Theta')
-    ax1.set_zlabel('Delta P')
+# --- PLOT 2: ERROR TRAJECTORIES (SEÇİLENLER) ---
+ax2 = fig.add_subplot(122, projection='3d')
+
+# Gri Düzlem (0 Hata)
+xx, yy = np.meshgrid(np.linspace(0, max_pm, 10), np.linspace(0, THETA_MAX, 10))
+zz = np.zeros_like(xx)
+ax2.plot_surface(xx, yy, zz, color='gray', alpha=0.2)
+
+all_errors_for_limit = []
+
+for i, traj in enumerate(selected_trajs):
+    # Model Tahmini
+    local_pred = valve_loss_model((traj['Pm'], traj['Theta']), *popt)
+    local_error = traj['DeltaP'] - local_pred
     
-    title_str = "Tüm Veriler" if len(TARGET_LOG_INDICES) == 0 else f"Seçilen Loglar: {TARGET_LOG_INDICES}"
-    ax1.set_title(f"Fiziksel Model ve {title_str}")
+    # DÜZELTME 1: extend içine direkt array'i veriyoruz.
+    # max() alarak tek sayıya düşürme, çünkü tüm noktaları görmemiz lazım.
+    all_errors_for_limit.extend(local_error)
     
-    # Legend (Eğer çok fazla değilse göster)
-    if len(selected_trajs) < 10:
-        ax1.legend()
-        
-    ax1.view_init(elev=25, azim=135)
-
-    # --- PLOT 2: ERROR TRAJECTORIES (SEÇİLENLER) ---
-    ax2 = fig.add_subplot(122, projection='3d')
+    # Hata Çizgisi
+    ax2.plot(traj['Pm'], traj['Theta'], local_error, 
+             color=colors[i], linewidth=2, label=f"Log {traj['Index']}")
     
-    # Gri Düzlem (0 Hata)
-    xx, yy = np.meshgrid(np.linspace(0, max_pm, 10), np.linspace(0, THETA_MAX, 10))
-    zz = np.zeros_like(xx)
-    ax2.plot_surface(xx, yy, zz, color='gray', alpha=0.2)
+    # Referans noktası
+    ax2.scatter(traj['Pm'][0], traj['Theta'][0], local_error[0], color=colors[i], s=10)
 
-    all_errors_for_limit = []
-
-    for i, traj in enumerate(selected_trajs):
-        # Model Tahmini
-        local_pred = valve_loss_model((traj['Pm'], traj['Theta']), *popt)
-        local_error = traj['DeltaP'] - local_pred
-        
-        # DÜZELTME 1: extend içine direkt array'i veriyoruz.
-        # max() alarak tek sayıya düşürme, çünkü tüm noktaları görmemiz lazım.
-        all_errors_for_limit.extend(local_error)
-        
-        # Hata Çizgisi
-        ax2.plot(traj['Pm'], traj['Theta'], local_error, 
-                 color=colors[i], linewidth=2, label=f"Log {traj['Index']}")
-        
-        # Referans noktası
-        ax2.scatter(traj['Pm'][0], traj['Theta'][0], local_error[0], color=colors[i], s=10)
-
-    # ==========================================
-    # EKSEN LİMİTİ AYARI (DÖNGÜ DIŞI)
-    # ==========================================
-    if all_errors_for_limit:
-        # Hataların mutlak değerini al (hem negatif hem pozitif hatalar için)
-        abs_errors = np.abs(all_errors_for_limit)
-        
-        # DÜZELTME 2: Grafik kesilmesin diye 'percentile' yerine 'max' kullanıyoruz.
-        # Böylece en uçtaki "outlier" hatayı bile kapsar.
-        max_err = np.max(abs_errors)
-        
-        # Eğer max hata 0 ise (ideal durum), manuel bir aralık verelim (örn: 1.0)
-        if max_err == 0: max_err = 1.0
-        
-        # Limiti %10 pay bırakarak ayarla
-        ax2.set_zlim(-max_err * 1.1, max_err * 1.1)
+# ==========================================
+# EKSEN LİMİTİ AYARI (DÖNGÜ DIŞI)
+# ==========================================
+if all_errors_for_limit:
+    # Hataların mutlak değerini al (hem negatif hem pozitif hatalar için)
+    abs_errors = np.abs(all_errors_for_limit)
     
-    ax2.set_xlabel('Manifold P')
-    ax2.set_ylabel('Theta')
-    ax2.set_zlabel('Hata (Residual)')
-    ax2.set_title('Seçilenlerin Hata Analizi')
-    ax2.view_init(elev=20, azim=120)
+    # DÜZELTME 2: Grafik kesilmesin diye 'percentile' yerine 'max' kullanıyoruz.
+    # Böylece en uçtaki "outlier" hatayı bile kapsar.
+    max_err = np.max(abs_errors)
+    
+    # Eğer max hata 0 ise (ideal durum), manuel bir aralık verelim (örn: 1.0)
+    if max_err == 0: max_err = 1.0
+    
+    # Limiti %10 pay bırakarak ayarla
+    ax2.set_zlim(-max_err * 1.1, max_err * 1.1)
 
-    plt.tight_layout()
-    plt.show()
+ax2.set_xlabel('Manifold P')
+ax2.set_ylabel('Theta')
+ax2.set_zlabel('Hata (Residual)')
+ax2.set_title('Seçilenlerin Hata Analizi')
+ax2.view_init(elev=20, azim=120)
 
-except Exception as e:
-    print(f"Hata: {e}")
-    import traceback
-    traceback.print_exc()
+plt.tight_layout()
+plt.show()

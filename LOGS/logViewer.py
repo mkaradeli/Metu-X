@@ -18,11 +18,11 @@ dirlist = sorted(os.listdir("."))
 for _ in dirlist:
 	if "log" in _ and ".bin" in _:
 		filename = _
-# filename = 'log0260.bin'
+# filename = 'log0382.bin'
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-# filename = "log"
+# filename = "log0378.bin"
 myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -56,7 +56,7 @@ ax[0].legend()
 ax[0].grid(True)
 ax[1].set_title('velocity')
 ax[1].plot(myLog.df.timestamp, myLog.df.speedDemand/6, label="speedDemand")
-ax[1].plot(myLog.df.timestamp, myLog.df.speed_ref_rate_limited/6, label="speed demand rate_limited")
+ax[1].plot(myLog.df.timestamp, myLog.df.speed_ref_rate_limited*180/np.pi/6, label="speed demand rate_limited")
 ax[1].plot(myLog.positionTime, myLog.valveVelocity/6, label = "speed feedback")
 # ax[1].plot(myLog.positionTime[:-1], np.diff(myLog.valveAngle)*4000/6, label='np.diff')
 ax[1].set_ylabel("RPM")

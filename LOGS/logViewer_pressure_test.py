@@ -32,9 +32,9 @@ myLog = log_processor(filename=filename)
 # print(myLog.df.)
 # aaa = np.diff(myLog.df.angleRaw, append=[myLog.df.angleRaw[myLog.dataLen-1]])
 
-for filename in dirlist:
-	if "log" in filename and ".bin" in filename:
-		log_processor(filename)
+# for filename in dirlist:
+# 	if "log" in filename and ".bin" in filename:
+# 		log_processor(filename)
 
 
 
@@ -47,10 +47,11 @@ fig.tight_layout()
 
 ax[0].grid(True)
 ax[0].set_title("pressure")
+ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand"], label="pressure_demand")
 ax[0].plot(myLog.df["timestamp"], myLog.df["manifold_pressure"], label="manifold_pressure")
 ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure"], label="nozzle_pressure")
 
-
+ax[0].legend()
 
 
 ax[1].set_title('position')

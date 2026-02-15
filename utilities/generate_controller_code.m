@@ -51,8 +51,17 @@ slbuild(positionController);
 % coder.report.open(controllerModel);
 
 %% KALMAN Filter
+
 kalman_filter = 'actuatorKalman';
 slbuild(kalman_filter);
+
+
+%% PRESSURE Controller
+
+controller_mode.CoderInfo.StorageClass = "ImportedExtern";
+pressureController = "pressureController";
+slbuild(pressureController);
+
 
 
 %% codu paketle
@@ -71,19 +80,26 @@ if ~exist(destinationFolder+"/src", 'dir')
 end
 
 % .c ve .h dosyalarını kopyala
+sourceFolder = fullfile(pwd, 'codegen', positionController + "_ert_rtw");
 copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder + "/src");
 copyfile(fullfile(sourceFolder, '*.h'), destinationFolder + "/inc");
 
 
-sourceFolder = fullfile(pwd, 'codegen', currentController + "_ert_rtw");
 
 % .c ve .h dosyalarını kopyala
+sourceFolder = fullfile(pwd, 'codegen', currentController + "_ert_rtw");
 copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder+"/src");
 copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 
-sourceFolder = fullfile(pwd, 'codegen', kalman_filter + "_ert_rtw");
 
 % .c ve .h dosyalarını kopyala
+sourceFolder = fullfile(pwd, 'codegen', kalman_filter + "_ert_rtw");
+copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder+"/src");
+copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
+
+
+% .c ve .h dosyalarını kopyala
+sourceFolder = fullfile(pwd, 'codegen', pressureController + "_ert_rtw");
 copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder+"/src");
 copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 
