@@ -13,6 +13,7 @@ controllerGains.current.SatMax = single(SatMax);
 controllerGains.current.SatMin = single(SatMin);
 controllerGains.current.Ts = double(Ts);
 
+
 %% SPEED CONTROLLER (GÜNCELLENDİ)
 f_speed = 2*pi*300;
 zeta = 0.707;
@@ -99,3 +100,6 @@ controller_mode = controller_modes.DISABLE;
 controller_mode = Simulink.Parameter(controller_mode);
 controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
 controller_mode.CoderInfo.Identifier = "controller_mode";
+
+%% PRESSURE CONTROLLER
+controllerGains.pressure.ktp = 0.5;
