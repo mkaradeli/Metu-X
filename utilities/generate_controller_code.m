@@ -59,6 +59,8 @@ slbuild(kalman_filter);
 %% PRESSURE Controller
 
 controller_mode.CoderInfo.StorageClass = "ImportedExtern";
+controllerGains.CoderInfo.StorageClass = "ImportedExtern";
+
 pressureController = "pressureController";
 slbuild(pressureController);
 

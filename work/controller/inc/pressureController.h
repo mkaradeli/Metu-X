@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'pressureController'.
 //
-// Model version                  : 1.19
+// Model version                  : 1.23
 // Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
-// C/C++ source code generated on : Sun Feb 15 20:47:12 2026
+// C/C++ source code generated on : Thu Feb 26 20:06:22 2026
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -37,76 +37,149 @@ enum class controller_modes
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_struct_lIrpsBx2XGeWflfk3xVByG_
+#define DEFINED_TYPEDEF_FOR_struct_lIrpsBx2XGeWflfk3xVByG_
+
+struct struct_lIrpsBx2XGeWflfk3xVByG
+{
+  real32_T Kp;
+  real32_T Ki;
+  real32_T SatMax;
+  real32_T SatMin;
+  real_T Ts;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_efjc54AtCP4u6rYRnJfUyF_
+#define DEFINED_TYPEDEF_FOR_struct_efjc54AtCP4u6rYRnJfUyF_
+
+struct struct_efjc54AtCP4u6rYRnJfUyF
+{
+  real32_T Kp;
+  real32_T Ki;
+  real32_T SatMax;
+  real32_T SatMin;
+  real32_T RateLimiterMax;
+  real32_T RateLimiterMin;
+  real_T Ts;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_UOhA0kLqPt9jH3DECgPk1E_
+#define DEFINED_TYPEDEF_FOR_struct_UOhA0kLqPt9jH3DECgPk1E_
+
+struct struct_UOhA0kLqPt9jH3DECgPk1E
+{
+  real32_T Kp;
+  real32_T Kff;
+  real32_T SatMax;
+  real32_T SatMin;
+  real32_T RateLimiterMax;
+  real32_T RateLimiterMin;
+  real_T Ts;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_nX7ssOP8Pea1vyXt0UgmRE_
+#define DEFINED_TYPEDEF_FOR_struct_nX7ssOP8Pea1vyXt0UgmRE_
+
+struct struct_nX7ssOP8Pea1vyXt0UgmRE
+{
+  real32_T Kp;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_In9luHMHiNdKBncTZV4w1E_
+#define DEFINED_TYPEDEF_FOR_struct_In9luHMHiNdKBncTZV4w1E_
+
+struct struct_In9luHMHiNdKBncTZV4w1E
+{
+  struct_lIrpsBx2XGeWflfk3xVByG current;
+  struct_efjc54AtCP4u6rYRnJfUyF speed;
+  struct_UOhA0kLqPt9jH3DECgPk1E position;
+  struct_nX7ssOP8Pea1vyXt0UgmRE pressure;
+};
+
+#endif
+
 // Imported (extern) block parameters
+extern struct_In9luHMHiNdKBncTZV4w1E currentControllerGains;// Variable: controllerGains
+                                                               //  Referenced by: '<S2>/Gain1'
+
 extern controller_modes controller_mode;// Variable: controller_mode
                                            //  Referenced by: '<Root>/Constant'
 
 
 // Class declaration for model pressureController
-class pressureController final
+namespace controller
 {
-  // public data and function members
- public:
-  // Block signals and states (default storage) for system '<Root>'
-  struct DW {
-    boolean_T Subsystem_MODE;          // '<Root>/Subsystem'
+  class pressure final
+  {
+    // public data and function members
+   public:
+    // Block signals and states (default storage) for system '<Root>'
+    struct DW {
+      boolean_T Subsystem_MODE;        // '<Root>/Subsystem'
+    };
+
+    // External inputs (root inport signals with default storage)
+    struct ExtU {
+      real32_T P_manifold;             // '<Root>/P_manifold'
+      real32_T P_nozzle_demand;        // '<Root>/P_nozzle_demand'
+      real32_T P_nozzle;               // '<Root>/P_nozzle'
+    };
+
+    // External outputs (root outports fed by signals with default storage)
+    struct ExtY {
+      real32_T position_demand;        // '<Root>/position_demand'
+    };
+
+    // Copy Constructor
+    pressure(pressure const&) = delete;
+
+    // Assignment Operator
+    pressure& operator= (pressure const&) & = delete;
+
+    // Move Constructor
+    pressure(pressure &&) = delete;
+
+    // Move Assignment Operator
+    pressure& operator= (pressure &&) = delete;
+
+    // External inputs
+    ExtU rtU;
+
+    // External outputs
+    ExtY rtY;
+
+    // model initialize function
+    static void initialize();
+
+    // model step function
+    void step();
+
+    // Constructor
+    pressure();
+
+    // Destructor
+    ~pressure();
+
+    // private data and function members
+   private:
+    // Block states
+    DW rtDW;
   };
-
-  // External inputs (root inport signals with default storage)
-  struct ExtU {
-    real32_T P_manifold;               // '<Root>/P_manifold'
-    real32_T P_nozzle_demand;          // '<Root>/P_nozzle_demand'
-    real32_T position_feedback;        // '<Root>/position_feedback'
-    real32_T P_nozzle;                 // '<Root>/P_nozzle'
-  };
-
-  // External outputs (root outports fed by signals with default storage)
-  struct ExtY {
-    real32_T position_demand;          // '<Root>/position_demand'
-  };
-
-  // Copy Constructor
-  pressureController(pressureController const&) = delete;
-
-  // Assignment Operator
-  pressureController& operator= (pressureController const&) & = delete;
-
-  // Move Constructor
-  pressureController(pressureController &&) = delete;
-
-  // Move Assignment Operator
-  pressureController& operator= (pressureController &&) = delete;
-
-  // External inputs
-  ExtU rtU;
-
-  // External outputs
-  ExtY rtY;
-
-  // model initialize function
-  static void initialize();
-
-  // model step function
-  void step();
-
-  // Constructor
-  pressureController();
-
-  // Destructor
-  ~pressureController();
-
-  // private data and function members
- private:
-  // Block states
-  DW rtDW;
-};
+}
 
 //-
 //  These blocks were eliminated from the model due to optimizations:
 //
-//  Block '<S2>/Scope' : Unused code path elimination
-//  Block '<S5>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S5>/Data Type Propagation' : Unused code path elimination
+//  Block '<S4>/Data Type Duplicate' : Unused code path elimination
+//  Block '<S4>/Data Type Propagation' : Unused code path elimination
 
 
 //-
@@ -127,8 +200,7 @@ class pressureController final
 //  '<S1>'   : 'pressureController/Compare To Constant'
 //  '<S2>'   : 'pressureController/Subsystem'
 //  '<S3>'   : 'pressureController/Subsystem/ValveModelForController'
-//  '<S4>'   : 'pressureController/Subsystem/ValveModelForPlant'
-//  '<S5>'   : 'pressureController/Subsystem/ValveModelForController/Saturation Dynamic'
+//  '<S4>'   : 'pressureController/Subsystem/ValveModelForController/Saturation Dynamic'
 
 #endif                                 // pressureController_h_
 

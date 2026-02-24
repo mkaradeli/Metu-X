@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'positionController'.
 //
-// Model version                  : 1.32
+// Model version                  : 1.33
 // Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
-// C/C++ source code generated on : Sun Feb 15 20:17:41 2026
+// C/C++ source code generated on : Tue Feb 24 22:38:00 2026
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -96,14 +96,25 @@ struct struct_UOhA0kLqPt9jH3DECgPk1E
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_bcCVSDe9ijc6YF0EEo7cx_
-#define DEFINED_TYPEDEF_FOR_struct_bcCVSDe9ijc6YF0EEo7cx_
+#ifndef DEFINED_TYPEDEF_FOR_struct_nX7ssOP8Pea1vyXt0UgmRE_
+#define DEFINED_TYPEDEF_FOR_struct_nX7ssOP8Pea1vyXt0UgmRE_
 
-struct struct_bcCVSDe9ijc6YF0EEo7cx
+struct struct_nX7ssOP8Pea1vyXt0UgmRE
+{
+  real32_T Kp;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_In9luHMHiNdKBncTZV4w1E_
+#define DEFINED_TYPEDEF_FOR_struct_In9luHMHiNdKBncTZV4w1E_
+
+struct struct_In9luHMHiNdKBncTZV4w1E
 {
   struct_lIrpsBx2XGeWflfk3xVByG current;
   struct_efjc54AtCP4u6rYRnJfUyF speed;
   struct_UOhA0kLqPt9jH3DECgPk1E position;
+  struct_nX7ssOP8Pea1vyXt0UgmRE pressure;
 };
 
 #endif
@@ -116,91 +127,94 @@ struct struct_bcCVSDe9ijc6YF0EEo7cx
 //  these parameters and exports their symbols.
 //
 
-extern struct_bcCVSDe9ijc6YF0EEo7cx currentControllerGains;// Variable: controllerGains
-                                                              //  Referenced by:
-                                                              //    '<S6>/Gain'
-                                                              //    '<S6>/Gain1'
-                                                              //    '<S6>/Saturation'
-                                                              //    '<S7>/Discrete-Time Integrator'
-                                                              //    '<S7>/Gain'
-                                                              //    '<S7>/Gain1'
-                                                              //    '<S7>/Gain2'
-                                                              //    '<S7>/Rate Limiter'
-                                                              //    '<S7>/Saturation'
+extern struct_In9luHMHiNdKBncTZV4w1E currentControllerGains;// Variable: controllerGains
+                                                               //  Referenced by:
+                                                               //    '<S6>/Gain'
+                                                               //    '<S6>/Gain1'
+                                                               //    '<S6>/Saturation'
+                                                               //    '<S7>/Discrete-Time Integrator'
+                                                               //    '<S7>/Gain'
+                                                               //    '<S7>/Gain1'
+                                                               //    '<S7>/Gain2'
+                                                               //    '<S7>/Rate Limiter'
+                                                               //    '<S7>/Saturation'
 
 extern controller_modes controller_mode;// Variable: controller_mode
                                            //  Referenced by: '<Root>/controller_mode'
 
 
 // Class declaration for model positionController
-class positionController final
+namespace controller
 {
-  // public data and function members
- public:
-  // Block signals and states (default storage) for system '<Root>'
-  struct DW {
-    real32_T Ui;                       // '<S7>/Discrete-Time Integrator'
-    real32_T RateLimiter;              // '<S7>/Rate Limiter'
-    real32_T Up;                       // '<S7>/Gain'
-    real32_T DiscreteTimeIntegrator_DSTATE;// '<S10>/Discrete-Time Integrator'
-    real32_T DiscreteTimeIntegrator_DSTATE_b;// '<S7>/Discrete-Time Integrator'
-    real32_T UD_DSTATE;                // '<S9>/UD'
-    real32_T PrevY;                    // '<S7>/Rate Limiter'
-    boolean_T SpeedController_MODE;    // '<Root>/Speed Controller'
-    boolean_T PositionController_MODE; // '<Root>/Position Controller'
+  class position final
+  {
+    // public data and function members
+   public:
+    // Block signals and states (default storage) for system '<Root>'
+    struct DW {
+      real32_T Ui;                     // '<S7>/Discrete-Time Integrator'
+      real32_T RateLimiter;            // '<S7>/Rate Limiter'
+      real32_T Up;                     // '<S7>/Gain'
+      real32_T DiscreteTimeIntegrator_DSTATE;// '<S10>/Discrete-Time Integrator' 
+      real32_T DiscreteTimeIntegrator_DSTATE_b;// '<S7>/Discrete-Time Integrator' 
+      real32_T UD_DSTATE;              // '<S9>/UD'
+      real32_T PrevY;                  // '<S7>/Rate Limiter'
+      boolean_T SpeedController_MODE;  // '<Root>/Speed Controller'
+      boolean_T PositionController_MODE;// '<Root>/Position Controller'
+    };
+
+    // External inputs (root inport signals with default storage)
+    struct ExtU {
+      real32_T pos_ref;                // '<Root>/pos_ref'
+      real32_T pos_feedback;           // '<Root>/pos_feedback'
+      real32_T SpeedFeedback;          // '<Root>/speed_feedback'
+      real32_T speedDemandExt;         // '<Root>/speedDemandExt'
+    };
+
+    // External outputs (root outports fed by signals with default storage)
+    struct ExtY {
+      real32_T currentDemand;          // '<Root>/currentDemand'
+      PI_debug speedDebug;             // '<Root>/speedDebug'
+      real32_T speedDemand;            // '<Root>/speedDemand'
+      real32_T pos_ref_rate_limited;   // '<Root>/pos_ref_rate_limited'
+    };
+
+    // Copy Constructor
+    position(position const&) = delete;
+
+    // Assignment Operator
+    position& operator= (position const&) & = delete;
+
+    // Move Constructor
+    position(position &&) = delete;
+
+    // Move Assignment Operator
+    position& operator= (position &&) = delete;
+
+    // External inputs
+    ExtU rtU;
+
+    // External outputs
+    ExtY rtY;
+
+    // model initialize function
+    static void initialize();
+
+    // model step function
+    void step();
+
+    // Constructor
+    position();
+
+    // Destructor
+    ~position();
+
+    // private data and function members
+   private:
+    // Block states
+    DW rtDW;
   };
-
-  // External inputs (root inport signals with default storage)
-  struct ExtU {
-    real32_T pos_ref;                  // '<Root>/pos_ref'
-    real32_T pos_feedback;             // '<Root>/pos_feedback'
-    real32_T SpeedFeedback;            // '<Root>/speed_feedback'
-    real32_T speedDemandExt;           // '<Root>/speedDemandExt'
-  };
-
-  // External outputs (root outports fed by signals with default storage)
-  struct ExtY {
-    real32_T currentDemand;            // '<Root>/currentDemand'
-    PI_debug speedDebug;               // '<Root>/speedDebug'
-    real32_T speedDemand;              // '<Root>/speedDemand'
-    real32_T pos_ref_rate_limited;     // '<Root>/pos_ref_rate_limited'
-  };
-
-  // Copy Constructor
-  positionController(positionController const&) = delete;
-
-  // Assignment Operator
-  positionController& operator= (positionController const&) & = delete;
-
-  // Move Constructor
-  positionController(positionController &&) = delete;
-
-  // Move Assignment Operator
-  positionController& operator= (positionController &&) = delete;
-
-  // External inputs
-  ExtU rtU;
-
-  // External outputs
-  ExtY rtY;
-
-  // model initialize function
-  static void initialize();
-
-  // model step function
-  void step();
-
-  // Constructor
-  positionController();
-
-  // Destructor
-  ~positionController();
-
-  // private data and function members
- private:
-  // Block states
-  DW rtDW;
-};
+}
 
 //-
 //  These blocks were eliminated from the model due to optimizations:

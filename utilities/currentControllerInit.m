@@ -72,7 +72,12 @@ controllerGains.position.SatMax = single(SatMax); % deg/s
 controllerGains.position.SatMin = single(SatMin); % deg/s
 controllerGains.position.RateLimiterMax = single(RateLimiterMax); % deg/s
 controllerGains.position.RateLimiterMin = single(RateLimiterMin); % deg/s
-controllerGains.position.Ts = double(Ts)
+controllerGains.position.Ts = double(Ts);
+
+
+%% PRESSURE CONTROLLER
+controllerGains.pressure.Kp = single(0.5);
+
 clear("SatMin", "SatMax", "Kp","Kff", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
 
 
@@ -95,11 +100,12 @@ PI_debug.Elements(3).Name = 'ref_rate_limited';
 PI_debug.Elements(3).DataType = 'single';
 PI_debug.Elements(3).Dimensions = 1;
 
+
+
+
 % controller_modes = Simulink.Parameter(controller_modes);
 controller_mode = controller_modes.DISABLE;
 controller_mode = Simulink.Parameter(controller_mode);
 controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
 controller_mode.CoderInfo.Identifier = "controller_mode";
 
-%% PRESSURE CONTROLLER
-controllerGains.pressure.ktp = 0.5;

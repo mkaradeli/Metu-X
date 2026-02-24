@@ -20,7 +20,7 @@ class  log_processor():
 		
 		headerLen = self.file.read(1)
 		self.headerLen, = struct.unpack('B', headerLen)
-		print(self.headerLen)
+		# print(self.headerLen)
 
 		# print(self.filename,self.headerLen)
 
@@ -28,8 +28,8 @@ class  log_processor():
 		self.header = struct.unpack(f"{self.headerLen}s", header)[0][:-1].decode("utf-8")
 
 
-		print(f"formatID = {self.formatID}")
-		print(self.header)
+		print(f"formatID = {self.formatID}", self.header)
+		# print()
 
 
 		self.convertBinary()
@@ -520,6 +520,96 @@ class  log_processor():
 			self.dataLen = self.df.__len__()
 			self.df["timestamp"] -= self.df["timestamp"][0]
 			self.df["timestamp"] *= 1e-6
+
+
+			self.positionTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/4, 4 * self.dataLen)
+			self.currentTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/8, 8 * self.dataLen)
+			# encoder = np.concat(self.df["encoder_48"].to_numpy())
+
+			self.valveAngleKalman = np.concatenate(self.df["valveAngleKalman"].to_numpy())
+			self.valveAngle = np.concatenate(self.df["valveAngle"].to_numpy())
+			self.valveVelocity = np.concatenate(self.df["valveVelocity"].to_numpy())
+			self.current_subsample = np.concatenate(self.df["current_subsample"].to_numpy())
+			self.duty_subsample = np.concatenate(self.df["duty_subsample"].to_numpy())
+
+			self.df_8kHz = pd.DataFrame(zip(self.currentTime,self.current_subsample,self.duty_subsample), columns = ['timestamp','current_subsample', 'duty_subsample'])
+			self.df_4kHz = pd.DataFrame(zip(self.positionTime,self.valveAngleKalman, self.valveAngle, self.valveVelocity), columns = ['timestamp','valveAngleKalman','valveAngle','valveVelocity'])
+			
+			
+		elif self.formatID == 10:
+			struct_size = self.file.read(2)
+			self.struct_size, = struct.unpack('H', struct_size)
+
+			self.binary = self.file.read()
+			self.struct_format = f"<I2f39f2H3f"
+			if self.struct_size != struct.calcsize(self.struct_format):
+				print('struct format is wrowng.')
+				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
+				exit()
+			self.columns = [
+				"timestamp",
+				"current_measured",
+				"current_demand",
+    			"valveAngle",
+				"valveAngleKalman",
+    			"valveVelocity",
+    			"current_subsample",
+    			"duty_subsample",
+    			"speedDemand",
+    			"pos_ref",
+    			"pos_ref_rate_limited",
+    			"speed_ref_rate_limited",
+    			"manifold_pressure",
+    			"nozzle_pressure",
+    			"pressure_demand",
+
+    			"quaternion_i",
+    			"quaternion_j",
+    			"quaternion_k",
+    			"quaternion_r",
+    			"lidar_height",
+    			"lidar_strength",
+    			"accel_x",
+    			"accel_y",
+    			"accel_z",
+			]
+
+			self.columns_scalar = [
+				"timestamp",
+				"current_measured",
+				"current_demand",
+				# "valveAngleKalman",
+    			# "valveAngle",
+    			# "valveVelocity",
+    			# "current_subsample",
+    			# "duty_subsample",
+    			"speedDemand",
+    			"pos_ref",
+    			"pos_ref_rate_limited",
+    			"speed_ref_rate_limited",
+    			"manifold_pressure",
+    			"nozzle_pressure",
+    			"pressure_demand",
+    			"quaternion_i",
+    			"quaternion_j",
+    			"quaternion_k",
+    			"quaternion_r",
+    			"lidar_height",
+    			"lidar_strength",
+    			"accel_x",
+    			"accel_y",
+    			"accel_z",
+			]
+
+
+			records = [struct.unpack(self.struct_format,self.binary[i:i+self.struct_size]) for i in range(0,len(self.binary),self.struct_size)]
+			records = [[*record[:3], list(record[3:3+4]), list(record[7:7+4]), list(record[11:11+4]), list(record[15:15+8]), list(record[23:23+8]), *record[31:31+7+9]] for record in records]
+			
+			self.df = pd.DataFrame(records, columns = self.columns)
+			self.dataLen = self.df.__len__()
+			self.df["timestamp"] -= self.df["timestamp"][0]
+			self.df["timestamp"] *= 1e-6
+			# self.df["quaternion"] = self.df["quaternion_i"], self.df["quaternion_j"], self.df["quaternion_k"], self.df["quaternion_r"]
 
 
 			self.positionTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/4, 4 * self.dataLen)

@@ -10,7 +10,7 @@ function ts = prepareLogForParameterEstimation(filename)
 %   - subsample length is constant across rows
 
 if nargin < 1
-    filename = "log0345.csv";
+    filename = "log0396.csv";
     % if folderPath == 0
         % error('No folder selected');
     % end

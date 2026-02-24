@@ -22,7 +22,7 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-# filename = "log0378.bin"
+# filename = "log0386.bin"
 myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
