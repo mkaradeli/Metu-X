@@ -109,3 +109,12 @@ controller_mode = Simulink.Parameter(controller_mode);
 controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
 controller_mode.CoderInfo.Identifier = "controller_mode";
 
+current_ref = Simulink.Signal;
+% current_ref.StorageClass = 'ImportedExtern';
+current_ref.CoderInfo.StorageClass = "Custom";
+current_ref.CoderInfo.CustomStorageClass = "Struct";
+
+Duty= Simulink.Signal;
+myVar.StorageClass = 'ImportedExtern';
+current_feedback = Simulink.Signal;
+myVar.StorageClass = 'ImportedExtern';
