@@ -1,14 +1,14 @@
 %% Global Constants
-R = 287;
-gamma = 1.4; 
-Gamma = sqrt(gamma)*(2/(1+gamma))^((gamma+1)/(2*(gamma -1)));
-Patm = 1.01325e5;
-Cv = 717;
-air_Cp_constants = [3.5575 -1.3606e-4 4.8601e-7 -3.2270e-10 7.3531e-14];
+fluid.R = 287;
+fluid.gamma = 1.4; 
+fluid.Gamma = sqrt(fluid.gamma)*(2/(1+fluid.gamma))^((fluid.gamma+1)/(2*(fluid.gamma -1)));
+fluid.Patm = 1.01325e5;
+fluid.Cv = 717;
+fluid.air_Cp_constants = [3.5575 -1.3606e-4 4.8601e-7 -3.2270e-10 7.3531e-14];
 
 
 %% Tank Constant
-V = 0.008; % m3
+fluid.V = 0.008; % m3
 %% Nozzle Constants
-A_throat = (2.8e-3/2)^2*pi; 
-mdotGain = 1.325047107111672E-8;
+fluid.A_throat = (2.8e-3/2)^2*pi; 
+fluid.mdotGain = 1.325047107111672E-8;

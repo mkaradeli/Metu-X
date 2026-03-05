@@ -68,17 +68,17 @@ slbuild(pressureController);
 
 %% codu paketle
 sourceFolder = fullfile(pwd, 'codegen', positionController + "_ert_rtw");
-destinationFolder = fullfile(pwd, 'Controller');
+destinationFolder = fullfile(pwd, 'Controller')
 
 % Hedef klasör yoksa oluştur
 if ~exist(destinationFolder, 'dir')
     mkdir(destinationFolder);
 end
 if ~exist(destinationFolder+"/inc", 'dir')
-    mkdir(destinationFolder);
+    mkdir(destinationFolder+"/inc");
 end
 if ~exist(destinationFolder+"/src", 'dir')
-    mkdir(destinationFolder);
+    mkdir(destinationFolder+"/src");
 end
 
 % .c ve .h dosyalarını kopyala
