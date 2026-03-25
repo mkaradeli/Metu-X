@@ -1,4 +1,4 @@
-function dataArray = prepareLogForParameterEstimation(folderPath)
+function dataArray = prepareLogForParameterEstimation_AkimInputu(folderPath)
 % folderPath = 'C:\Users\egeel\Desktop\metux-son\Metu-X\LOGS';
 % prepareLogForParameterEstimation  Convert all CSV logs in a folder to timeseries
 %

@@ -43,11 +43,11 @@ RateLimiterMin = -2e15;
 
 % Kp Hesabı: Atalet (J) ve yeni Km'ye bağlı.
 controllerGains.speed.Kp = single(J_ / Km_ * f_speed);
-controllerGains.speed.Kp
+controllerGains.speed.Kp;
 % Ki Hesabı: Viskoz (bv) + Statik (Fs) toplam direncine göre hesaplandı.
 % Bu sayede integral, hem sürtünmeyi hem de basınç yükünü (disturbance) yenecek güce ulaşır.
 controllerGains.speed.Ki = single(bv_ / Km_ * f_speed);
-controllerGains.speed.Ki
+controllerGains.speed.Ki;
 controllerGains.speed.SatMax = single(SatMax);
 controllerGains.speed.SatMin = single(SatMin);
 controllerGains.speed.RateLimiterMax = single(RateLimiterMax);
@@ -76,11 +76,12 @@ controllerGains.position.Ts = double(Ts);
 
 
 %% PRESSURE CONTROLLER
-controllerGains.pressure.Kp = single(0.5);
+controllerGains.pressure.Kp = single(0.0);
+% controllerGains.pressure.Kp = single(0.0);
 
 clear("SatMin", "SatMax", "Kp","Kff", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
 
-
+disp(controllerGains)
 %% BUS DEFINITIONS & CODER INFO
 controllerGains = Simulink.Parameter(controllerGains);
 controllerGains.CoderInfo.StorageClass = "ExportedGlobal";

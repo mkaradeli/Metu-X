@@ -22,33 +22,37 @@ controller_mode.CoderInfo.StorageClass = "ImportedExtern";
 
 
 currentController = 'currentController';
-% if(~bdIsLoaded(currentController))
-%     open_system(currentController);
-% end
-
+if ~bdIsLoaded(currentController)
+    load_system(currentController);
+end
+set_param(currentController, ...
+    'GenCodeOnly', 'on', ...           % set to 'on' to only generate code
+    'GenerateReport', 'off', ...
+    'SolverType', 'Fixed-step', ...
+    'Solver', 'FixedStepDiscrete', ...
+    'FixedStep', '1e-3/8');
+save_system(currentController);
 slbuild(currentController);
-% coder.report.generate(controllerModel);
-% coder.report.open(controllerModel);
 
 
+%% Aktuator Kontrolcüsü
 
-
-%% Hız ve Pozisyon Kontrolcüsü
-
-% kontrolcü parametreleri bir kere dışa aktarıldığı için tekrar dışa
-% aktarılmayacak.
 controllerGains.CoderInfo.StorageClass = "ExportedGlobal";
-controllerGains.CoderInfo.Identifier = "currentControllerGains";
 controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
 
+actuatorController = 'actuatorController';
+if ~bdIsLoaded(actuatorController)
+    load_system(actuatorController);
+end
+set_param(actuatorController, ...
+    'GenCodeOnly', 'on', ...           % set to 'on' to only generate code
+    'GenerateReport', 'off', ...
+    'SolverType', 'Fixed-step', ...
+    'Solver', 'FixedStepDiscrete', ...
+    'FixedStep', '1e-3');
+save_system(actuatorController);
+slbuild(actuatorController);
 
-positionController = 'positionController';
-% if(~bdIsLoaded(positionController))
-%     open_system(positionController);
-% end
-slbuild(positionController);
-% coder.report.generate(controllerModel);
-% coder.report.open(controllerModel);
 
 %% KALMAN Filter
 
@@ -56,19 +60,9 @@ kalman_filter = 'actuatorKalman';
 slbuild(kalman_filter);
 
 
-%% PRESSURE Controller
-
-controller_mode.CoderInfo.StorageClass = "ImportedExtern";
-controllerGains.CoderInfo.StorageClass = "ImportedExtern";
-
-pressureController = "pressureController";
-slbuild(pressureController);
-
-
-
 %% codu paketle
-sourceFolder = fullfile(pwd, 'codegen', positionController + "_ert_rtw");
-destinationFolder = fullfile(pwd, 'Controller')
+% sourceFolder = fullfile(pwd, 'codegen', actuatorController + "_ert_rtw");
+destinationFolder = fullfile(pwd, 'Controller');
 
 % Hedef klasör yoksa oluştur
 if ~exist(destinationFolder, 'dir')
@@ -80,11 +74,6 @@ end
 if ~exist(destinationFolder+"/src", 'dir')
     mkdir(destinationFolder+"/src");
 end
-
-% .c ve .h dosyalarını kopyala
-sourceFolder = fullfile(pwd, 'codegen', positionController + "_ert_rtw");
-copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder + "/src");
-copyfile(fullfile(sourceFolder, '*.h'), destinationFolder + "/inc");
 
 
 
@@ -101,7 +90,7 @@ copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 
 
 % .c ve .h dosyalarını kopyala
-sourceFolder = fullfile(pwd, 'codegen', pressureController + "_ert_rtw");
+sourceFolder = fullfile(pwd, 'codegen', actuatorController + "_ert_rtw");
 copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder+"/src");
 copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 

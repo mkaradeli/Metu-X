@@ -12,10 +12,10 @@ function ts = prepareLogForParameterEstimation(filename)
 if nargin < 1
     filename = "log0396.csv";
     % if folderPath == 0
-        % error('No folder selected');
-    % end
+    % error('No folder selected');
+   
 end
-filename = "../LOGS/" + filename;
+filename = "../LOGS/" + filename
 % create filename with '_4kHz' before the .csv extension
 
 [filepath,name,ext] = fileparts(filename);
@@ -48,12 +48,23 @@ scalarVars = {
     "pos_ref_rate_limited"
     "speed_ref_rate_limited"
     "manifold_pressure"
-    "nozzle_pressure"
+    "nozzle_pressure",
+    "pressure_demand",
+    "quaternion_i",
+    "quaternion_j",
+    "quaternion_k",
+    "quaternion_r",
+    "lidar_height",
+    "lidar_strength",
+    "accel_x",
+    "accel_y",
+    "accel_z",
+
 };
 
 for i = 1:numel(scalarVars)
     v = scalarVars{i};
-    ts.(v) = timeseries(T.(v), t, 'Name', v);
+    ts.(v) = timeseries(single(T.(v)), t, 'Name', v);
 end
 %% --------- Subsampled signals ---------
 subsampledVars_4kHz = {
@@ -84,34 +95,6 @@ for i = 1:numel(subsampledVars_8kHz)
 end
 
 
-
-% for i = 1:numel(subsampledVars)
-%     v = subsampledVars{i};
-% 
-%     % "[...]" -> numeric vector
-% 
-%     dataCells = cellfun(@str2num, T.(v), 'UniformOutput', false); %#ok<ST2NM>
-% 
-%     Nsub = numel(dataCells{1});
-%     Ts_sub = Ts_main / Nsub;
-% 
-%     nMain = numel(t);
-%     t_sub = zeros(nMain * Nsub, 1);
-%     y_sub = zeros(nMain * Nsub, 1);
-% 
-%     idx = 1;
-% 
-%     for k = 1:nMain
-%         tk = t(k) + (0:Nsub-1)' * Ts_sub;
-% 
-%         t_sub(idx:idx+Nsub-1) = tk;
-%         y_sub(idx:idx+Nsub-1) = dataCells{k}(:);
-% 
-%         idx = idx + Nsub;
-%     end
-% 
-%     ts.(v) = timeseries(y_sub, t_sub, 'Name', v);
-% end
 
 
 end
