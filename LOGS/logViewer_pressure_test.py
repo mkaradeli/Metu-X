@@ -22,7 +22,7 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-# filename = "log0445.bin"
+# filename = "log1029.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -41,7 +41,7 @@ myLog = log_processor(filename)
 
 
 
-fig,ax= plt.subplots(3,sharex=True)
+fig,ax= plt.subplots(4,sharex=True)
 fig.canvas.manager.set_window_title(filename) 
 
 fig.tight_layout()
@@ -49,14 +49,17 @@ fig.tight_layout()
 ax[0].grid(True)
 ax[0].set_title("pressure")
 
-try:
-	ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand"], label="pressure_demand")
-except:
-	pass
+# try:
+	# ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand"], label="pressure_demand")
+# except:
+	# pass
 ax[0].plot(myLog.df["timestamp"], myLog.df["manifold_pressure"], label="manifold_pressure")
 ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure"], label="nozzle_pressure")
 
 ax[0].legend()
+# ax[0].set_xlim(0,60)
+# ax[0].set_ylim(-10,4500)
+
 
 
 ax[1].set_title('position')
@@ -65,6 +68,7 @@ ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref, label="pos_ref")
 ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_rate_limited, label="pos_ref rate limited")
 ax[1].plot(myLog.positionTime, myLog.valveAngle, label="valveAngle")
 ax[1].plot(myLog.positionTime, myLog.valveAngleKalman, label="valveAngleKalman")
+# ax[1].set_ylim(-100,2000)
 
 ax[1].set_ylabel("deg")
 # ax[1].plot(myLog.df.timestamp, myLog.df.angleRaw/13.7, label="angleRaw")
@@ -77,11 +81,20 @@ ax[2].plot(myLog.df.timestamp, myLog.df.speedDemand/6, label="speedDemand")
 ax[2].plot(myLog.df.timestamp, myLog.df.speed_ref_rate_limited/6, label="speed demand rate_limited")
 ax[2].plot(myLog.positionTime, myLog.valveVelocity/6, label = "speed feedback")
 ax[2].set_ylabel("RPM")
+# ax[2].set_ylim(-500,500)
 ax[2].legend()
 # ax[2].plot(myLog.df.timestamp, myLog.df.encoderButt)
 ax[2].grid(True)
+ax[3].plot(myLog.df.timestamp, myLog.df['thrust_measured']*9.80655,label="thrust_measured")
+ax[3].grid(True)
+ax[3].set_ylabel("measured force (N)")
+# ax[3].set_ylim(0,600)
 plt.savefig(filename[:-4]+'.png')
 plt.show()
+plt.figure()
+plt.plot(myLog.df.timestamp)
+plt.show()
+print(myLog.struct_size)
 # plt.show()
 		# except:
 		# 	continue

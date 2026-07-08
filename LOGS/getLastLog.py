@@ -1,7 +1,7 @@
 import os
 import shutil
 
-sdFolder = "/Volumes/NO NAME"
+sdFolder = "/Volumes/NAME"
 if not os.path.exists(sdFolder):
 	sdFolder = "/Volumes/LOG0       "
 	if not os.path.exists(sdFolder):

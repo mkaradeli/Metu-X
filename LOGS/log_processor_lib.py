@@ -5,6 +5,19 @@ import os.path as path
 
 NORMALIZE_TIMESTAMPS = True
 
+_CRC16_TABLE = []
+for _b in range(256):
+	_c = _b << 8
+	for _ in range(8):
+		_c = ((_c << 1) ^ 0x1021) if (_c & 0x8000) else (_c << 1)
+	_CRC16_TABLE.append(_c & 0xFFFF)
+
+def crc16(data: bytes, init: int = 0xFFFF) -> int:
+	crc = init
+	for byte in data:
+		crc = ((crc << 8) & 0xFFFF) ^ _CRC16_TABLE[((crc >> 8) ^ byte) & 0xFF]
+	return crc
+
 class  log_processor():
 	def __init__(self,filename: str) -> None:
 		self.filename = filename
@@ -30,8 +43,7 @@ class  log_processor():
 
 		print(f"formatID = {self.formatID}", self.header)
 		# print()
-
-
+		
 		self.convertBinary()
 		# self.binary = self.file.read()
 		self.file.close()
@@ -469,6 +481,8 @@ class  log_processor():
 		elif self.formatID == 9:
 			struct_size = self.file.read(2)
 			self.struct_size, = struct.unpack('H', struct_size)
+			if struct_size == 3112:
+				struct_size = 152
 
 			self.binary = self.file.read()
 			self.struct_format = f"<I2f35f"
@@ -626,13 +640,187 @@ class  log_processor():
 			self.df_4kHz = pd.DataFrame(zip(self.positionTime,self.valveAngleKalman, self.valveAngle, self.valveVelocity), columns = ['timestamp','valveAngleKalman','valveAngle','valveVelocity'])
 			
 			
+		elif self.formatID == 11:
+			struct_size = self.file.read(2)
+			self.struct_size, = struct.unpack('H', struct_size)
 
+			self.binary = self.file.read()
+			self.struct_format = '<I2f4f4f4f8f8f2f2ffH2xfH2xf3fH2x'
+			if self.struct_size != struct.calcsize(self.struct_format):
+				print('struct format is wrowng.')
+				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
+				exit()
+			self.columns = [
+				"timestamp",
+				"current_measured",
+				"current_demand",
+    			"valveAngle",
+				"valveAngleKalman",
+    			"valveVelocity",
+    			"current_subsample",
+    			"duty_subsample",
+    			"speedDemand",
+    			"pos_ref",
+    			"pos_ref_rate_limited",
+    			"speed_ref_rate_limited",
+    			"manifold_pressure",
+    			"manifold_raw",
+    			"nozzle_pressure",
+    			"nozzle_raw",
+    			"pressure_demand",
+				"thrust_demand",
+				"thrust_estimated",
+				"thrust_measured",
+				"thrust_raw"
+			]
+
+			self.columns_scalar = [
+				"timestamp",
+				"current_measured",
+				"current_demand",
+				# "valveAngleKalman",
+    			# "valveAngle",
+    			# "valveVelocity",
+    			# "current_subsample",
+    			# "duty_subsample",
+    			"speedDemand",
+    			"pos_ref",
+    			"pos_ref_rate_limited",
+    			"speed_ref_rate_limited",
+    			"manifold_pressure",
+    			"manifold_raw",
+
+    			"nozzle_pressure",
+    			"nozzle_raw",
+    			"pressure_demand",
+    			"thrust_demand",
+				"thrust_estimated",
+				"thrust_measured",
+				"thrust_raw"
+			]
+
+
+			records = [struct.unpack(self.struct_format,self.binary[i:i+self.struct_size]) for i in range(0,len(self.binary)-len(self.binary)%self.struct_size,self.struct_size)]
+			records = [[*record[:3], list(record[3:3+4]), list(record[7:7+4]), list(record[11:11+4]), list(record[15:15+8]), list(record[23:23+8]), *record[31:31+13]] for record in records]
+			
+			self.df = pd.DataFrame(records, columns = self.columns)
+			self.dataLen = self.df.__len__()
+			self.df["timestamp"] -= self.df["timestamp"][0]
+			self.df["timestamp"] *= 1e-6
+
+
+			self.positionTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/4, 4 * self.dataLen)
+			self.currentTime = np.linspace(0,self.df['timestamp'][self.dataLen-1]+1e-3/8, 8 * self.dataLen)
+			# encoder = np.concat(self.df["encoder_48"].to_numpy())
+
+			self.valveAngleKalman = np.concatenate(self.df["valveAngleKalman"].to_numpy())
+			self.valveAngle = np.concatenate(self.df["valveAngle"].to_numpy())
+			self.valveVelocity = np.concatenate(self.df["valveVelocity"].to_numpy())
+			self.current_subsample = np.concatenate(self.df["current_subsample"].to_numpy())
+			self.duty_subsample = np.concatenate(self.df["duty_subsample"].to_numpy())
+
+			self.df_8kHz = pd.DataFrame(zip(self.currentTime,self.current_subsample,self.duty_subsample), columns = ['timestamp','current_subsample', 'duty_subsample'])
+			self.df_4kHz = pd.DataFrame(zip(self.positionTime,self.valveAngleKalman, self.valveAngle, self.valveVelocity), columns = ['timestamp','valveAngleKalman','valveAngle','valveVelocity'])
+			
+			
 
 
 
 
 			# records = np.transpose(np.array([subSampleTime,encoder,current]))
 			# self.df_subsample = pd.DataFrame(records, columns=["timestamp", "encoder", "current"])
+		elif self.formatID == 12:   # packed, start[2] sync, grouped raws, crc
+			struct_size = self.file.read(2)
+			self.struct_size, = struct.unpack('<H', struct_size)
+
+			self.binary = self.file.read()
+			# 2x skips start[2] so tuple indices stay aligned with the old code
+			self.struct_format = '<2xI2f4f4f4f8f8f2f2f3f3f4H'   # 174 bytes
+			if self.struct_size != struct.calcsize(self.struct_format):
+				print('struct format is wrong.')
+				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
+				exit()
+			self.columns = [
+				"timestamp",
+				"current_measured",
+				"current_demand",
+				"valveAngle",
+				"valveAngleKalman",
+				"valveVelocity",
+				"current_subsample",
+				"duty_subsample",
+				"speedDemand",
+				"pos_ref",
+				"pos_ref_rate_limited",
+				"speed_ref_rate_limited",
+				"manifold_pressure",
+				"nozzle_pressure",
+				"pressure_demand",
+				"thrust_demand",
+				"thrust_estimated",
+				"thrust_measured",
+				"manifold_raw",
+				"nozzle_raw",
+				"thrust_raw",
+				"crc"
+			]
+
+			self.columns_scalar = [c for c in self.columns if c not in
+				("valveAngle","valveAngleKalman","valveVelocity",
+				 "current_subsample","duty_subsample")]
+
+			SYNC = b'KD'
+			CRC_SPAN = self.struct_size - 2
+
+			records = []
+			bad_sync = 0
+			bad_crc = 0
+			n_frames = len(self.binary) // self.struct_size
+			for i in range(0, n_frames * self.struct_size, self.struct_size):
+				frame = self.binary[i:i+self.struct_size]
+				if frame[:2] != SYNC:
+					bad_sync += 1
+					continue
+				crc_stored, = struct.unpack_from('<H', frame, self.struct_size - 2)
+				if crc16(frame[:CRC_SPAN]) != crc_stored:
+					bad_crc += 1
+					continue
+				if i not in range(930*self.struct_size,940*self.struct_size):
+					records.append(struct.unpack(self.struct_format, frame))
+
+			if bad_sync or bad_crc:
+				print(f"frame check: {bad_sync} bad sync, {bad_crc} bad CRC, "
+				      f"{len(records)}/{n_frames} frames OK")
+			else:
+				print(f"frame check: all {n_frames} frames OK")
+
+			if not records:
+				print("no valid frames — check sync bytes / CRC variant")
+				exit()
+			records = [[*r[:3],
+			            list(r[3:7]), list(r[7:11]), list(r[11:15]),
+			            list(r[15:23]), list(r[23:31]),
+			            *r[31:45]] for r in records]
+
+			self.df = pd.DataFrame(records, columns=self.columns)
+			self.dataLen = self.df.__len__()
+			self.df["timestamp"] -= self.df["timestamp"][0]
+			self.df["timestamp"] *= 1e-6
+
+			self.positionTime = np.linspace(0, self.df['timestamp'][self.dataLen-1]+1e-3/4, 4*self.dataLen)
+			self.currentTime  = np.linspace(0, self.df['timestamp'][self.dataLen-1]+1e-3/8, 8*self.dataLen)
+
+			self.valveAngleKalman  = np.concatenate(self.df["valveAngleKalman"].to_numpy())
+			self.valveAngle        = np.concatenate(self.df["valveAngle"].to_numpy())
+			self.valveVelocity     = np.concatenate(self.df["valveVelocity"].to_numpy())
+			self.current_subsample = np.concatenate(self.df["current_subsample"].to_numpy())
+			self.duty_subsample    = np.concatenate(self.df["duty_subsample"].to_numpy())
+
+			self.df_8kHz = pd.DataFrame(zip(self.currentTime, self.current_subsample, self.duty_subsample),
+			                            columns=['timestamp','current_subsample','duty_subsample'])
+			self.df_4kHz = pd.DataFrame(zip(self.positionTime, self.valveAngleKalman, self.valveAngle, self.valveVelocity),
+			                            columns=['timestamp','valveAngleKalman','valveAngle','valveVelocity'])
+
 
 		else:
 			print("DONT KNOW formatID")

@@ -18,11 +18,12 @@ dirlist = sorted(os.listdir("."))
 for _ in dirlist:
 	if "log" in _ and ".bin" in _:
 		filename = _
-# filename = 'log0382.bin'
+# filename = 'log0371.bin'
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
-print(filename)
-filename = "log0440.bin"
+# print(filename)
+# filename = "log0440.bin"
+filename = 'log1003.bin'
 myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -32,6 +33,9 @@ myLog = log_processor(filename=filename)
 # print(myLog.df.)
 # aaa = np.diff(myLog.df.angleRaw, append=[myLog.df.angleRaw[myLog.dataLen-1]])
 
+print(myLog.headerLen)
+print(myLog.header)
+print(myLog.struct_size)
 
 
 print(myLog.valveVelocity)
@@ -43,10 +47,12 @@ fig.tight_layout()
 
 ax[0].set_title('position')
 print(myLog.valveAngle)
-ax[0].plot(myLog.df.timestamp, myLog.df.pos_ref, label="pos_ref")
-ax[0].plot(myLog.df.timestamp, myLog.df.pos_ref_rate_limited, label="pos_ref rate limited")
+# ax[0].plot(myLog.df.timestamp[1:], np.diff(myLog.df.timestamp )*1000, label="timestamp")
+# ax[0].plot(myLog.df.timestamp, myLog.df.pos_ref_rate_limited, label="pos_ref rate limited")
 ax[0].plot(myLog.positionTime, myLog.valveAngle, label="valveAngle")
 ax[0].plot(myLog.positionTime, myLog.valveAngleKalman, label="valveAngleKalman")
+# ax[0].set_xlim(0,60)
+# ax[0].set_ylim(-100,2000)
 
 ax[0].set_ylabel("deg")
 # ax[0].plot(myLog.df.timestamp, myLog.df.angleRaw/13.7, label="angleRaw")
@@ -60,6 +66,7 @@ ax[1].plot(myLog.df.timestamp, myLog.df.speed_ref_rate_limited*180/np.pi/6, labe
 ax[1].plot(myLog.positionTime, myLog.valveVelocity/6, label = "speed feedback")
 # ax[1].plot(myLog.positionTime[:-1], np.diff(myLog.valveAngle)*4000/6, label='np.diff')
 ax[1].set_ylabel("RPM")
+# ax[1].set_ylim(-600,600)
 ax[1].legend()
 # ax[1].plot(myLog.df.timestamp, myLog.df.encoderButt)
 ax[1].grid(True)
@@ -69,6 +76,7 @@ ax[2].grid(True)
 ax[2].plot(myLog.currentTime, myLog.current_subsample, label='current feedback')
 ax[2].plot(myLog.df.timestamp, myLog.df.current_demand, label= "current demand")
 ax[2].set_ylabel("A")
+# ax[2].set_ylim(-20,20)
 ax[2].legend()
 # ax[2].set_yticks(np.arange(-10,10,1))
 
@@ -76,8 +84,10 @@ ax[3].grid(True)
 ax[3].plot(myLog.currentTime, myLog.duty_subsample*100)
 # ax[3].plot(myLog.positionTime[:-1],np.diff(myLog.valveVelocity)/(1e-3/4))
 ax[3].set_ylabel("%")
+# ax[3].set_ylim(-1.4,1.4)
 # plt.subplots_adjust(bottom=0.25)
 plt.savefig(filename[:-4]+'.png')
 plt.show()
+
 
 print(myLog.df.axes)
