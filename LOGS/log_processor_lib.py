@@ -821,7 +821,93 @@ class  log_processor():
 			self.df_4kHz = pd.DataFrame(zip(self.positionTime, self.valveAngleKalman, self.valveAngle, self.valveVelocity),
 			                            columns=['timestamp','valveAngleKalman','valveAngle','valveVelocity'])
 
+		elif self.formatID == 13:   # packed, start[2] sync, ActuatorData_t[4], crc
+			struct_size = self.file.read(2)
+			self.struct_size, = struct.unpack('<H', struct_size)
 
+			self.binary = self.file.read()
+			N_ACT = 4
+			# ActuatorData_t (packed): 14 floats + uint16 nozzle_raw = 58 bytes
+			ACT_FMT = '14fH'
+			ACT_FIELDS = [
+				"current_measured",
+				"current_demand",
+				"valveAngle",
+				"valveAngleKalman",
+				"valveVelocity",
+				"duty",
+				"speedDemand",
+				"pos_ref",
+				"pos_ref_rate_limited",
+				"speed_ref_rate_limited",
+				"nozzle_pressure",
+				"pressure_demand",
+				"thrust_demand",
+				"thrust_estimated",
+				"nozzle_raw",
+			]
+			N_ACT_FIELDS = len(ACT_FIELDS)   # 15 unpacked values per actuator
+
+			# 2x skips start[2] sync bytes; tail: manifold_pressure, manifold_raw,
+			# thrust_measured, thrust_raw, crc
+			self.struct_format = '<2xI' + ACT_FMT * N_ACT + 'fHfHH'   # 252 bytes
+			if self.struct_size != struct.calcsize(self.struct_format):
+				print('struct format is wrong.')
+				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
+				exit()
+
+			self.columns = ["timestamp"]
+			for i in range(N_ACT):
+				self.columns += [f"{f}_{i}" for f in ACT_FIELDS]
+			self.columns += [
+				"manifold_pressure",
+				"manifold_raw",
+				"thrust_measured",
+				"thrust_raw",
+				"crc",
+			]
+			self.columns_scalar = self.columns   # no array fields in this format
+
+			SYNC = b'KD'
+			CRC_SPAN = self.struct_size - 2
+
+			records = []
+			bad_sync = 0
+			bad_crc = 0
+			n_frames = len(self.binary) // self.struct_size
+			for i in range(0, n_frames * self.struct_size, self.struct_size):
+				frame = self.binary[i:i+self.struct_size]
+				if frame[:2] != SYNC:
+					bad_sync += 1
+					continue
+				crc_stored, = struct.unpack_from('<H', frame, self.struct_size - 2)
+				if crc16(frame[:CRC_SPAN]) != crc_stored:
+					bad_crc += 1
+					continue
+				records.append(struct.unpack(self.struct_format, frame))
+
+			if bad_sync or bad_crc:
+				print(f"frame check: {bad_sync} bad sync, {bad_crc} bad CRC, "
+				      f"{len(records)}/{n_frames} frames OK")
+			else:
+				print(f"frame check: all {n_frames} frames OK")
+
+			if not records:
+				print("no valid frames — check sync bytes / CRC variant")
+				exit()
+
+			self.df = pd.DataFrame(records, columns=self.columns)
+			self.dataLen = self.df.__len__()
+			self.df["timestamp"] -= self.df["timestamp"][0]
+			self.df["timestamp"] *= 1e-6
+
+			# per-actuator dataframes for convenience: self.df_act[i]
+			self.df_act = []
+			for i in range(N_ACT):
+				cols = ["timestamp"] + [f"{f}_{i}" for f in ACT_FIELDS]
+				df_i = self.df[cols].copy()
+				df_i.columns = ["timestamp"] + ACT_FIELDS
+				self.df_act.append(df_i)
 		else:
 			print("DONT KNOW formatID")
 			exit()
