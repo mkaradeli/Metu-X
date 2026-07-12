@@ -119,3 +119,5 @@ Duty= Simulink.Signal;
 myVar.StorageClass = 'ImportedExtern';
 current_feedback = Simulink.Signal;
 myVar.StorageClass = 'ImportedExtern';
+
+Pressure_Controller_Coefs = [4.186482996705929e+05	-7.018364850382702e+05	4.283004051782079e+05	-1.102896898864376e+05	9.447229813653874e+03	1.157129922929033e+03	0];
