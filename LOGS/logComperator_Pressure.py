@@ -9,7 +9,8 @@ import sys
 
 
 log1 = 'log0394.bin'
-log2 = 'log1020.bin'
+log2 = 'log1247.bin'
+
 
 log1_name = "open loop pressure"
 log2_name = "yuzey kaymasi duzeltilmis."
