@@ -18,7 +18,7 @@ dirlist = sorted(os.listdir("."))
 for _ in dirlist:
 	if "log" in _ and ".bin" in _:
 		filename = _
-# filename = 'log0245.bin'
+filename = 'log1883.bin'
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)

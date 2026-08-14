@@ -22,12 +22,12 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-# filename = "log1629.bin"
+filename = "log1943.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
 
-# print( test.__dir__())
+# print( test._dir_())
 # exit()
 # print(myLog.df.)
 # aaa = np.diff(myLog.df.angleRaw, append=[myLog.df.angleRaw[myLog.dataLen-1]])
@@ -41,7 +41,7 @@ myLog = log_processor(filename)
 
 
 
-fig,ax= plt.subplots(3,sharex=True)
+fig,ax= plt.subplots(4,sharex=True)
 fig.canvas.manager.set_window_title(filename) 
 
 fig.tight_layout()
@@ -90,6 +90,13 @@ ax[2].plot(myLog.df.timestamp, (myLog.df['thrust_measured'] - myLog.df['thrust_m
 
 ax[2].grid(True)
 ax[2].set_ylabel("Force Feedback (N)")
+
+ax[3].plot(myLog.df.timestamp, myLog.df.current_demand_0, label = "demand")
+ax[3].plot(myLog.df.timestamp, myLog.df.current_measured_0, label="measured")
+ax[3].grid(True)
+ax[3].set_ylabel("current [A]")
+ax[3].set_xlabel("time [s]")
+
 
 # ax[3].set_ylim(0,600)
 plt.savefig(filename[:-4]+'.png')
