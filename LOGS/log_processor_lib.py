@@ -1124,7 +1124,7 @@ class  log_processor():
 
 			# 2x skips start[2] sync bytes; tail: manifold_pressure, manifold_raw,
 			# thrust_measured, thrust_raw, crc
-			self.struct_format = '<2xI' + ACT_FMT * N_ACT + 'fHfHfffffffHHH'   # 280 bytes
+			self.struct_format = '<2xI' + ACT_FMT * N_ACT + 'fHfHfffffffHH7fIcH'   # 280 bytes
 			if self.struct_size != struct.calcsize(self.struct_format):
 				print('struct format is wrong.')
 				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
@@ -1147,6 +1147,15 @@ class  log_processor():
 				"linAccel_z",
 				"lidar_height",
 				"lidar_strength",
+				"kf_altitude",
+				"kf_velocity",
+				"kf_accelBias",
+				"kf_sigmaH",
+				"kf_sigmaV",
+				"kf_meanNis",
+				"kf_tiltCos",
+				"kf_rejects",
+				"kf_flags",
 				"crc",
 			]
 			self.columns_scalar = self.columns   # no array fields in this format
