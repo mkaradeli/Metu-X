@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'actuatorController'.
 //
-// Model version                  : 1.50
+// Model version                  : 1.56
 // Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
-// C/C++ source code generated on : Fri Aug 14 20:13:34 2026
+// C/C++ source code generated on : Sun Aug 16 17:57:03 2026
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -117,15 +117,15 @@ struct struct_In9luHMHiNdKBncTZV4w1E
 
 extern struct_In9luHMHiNdKBncTZV4w1E currentControllerGains;// Variable: controllerGains
                                                                //  Referenced by:
-                                                               //    '<S11>/Gain'
-                                                               //    '<S11>/Gain1'
-                                                               //    '<S11>/Saturation'
-                                                               //    '<S12>/Discrete-Time Integrator'
                                                                //    '<S12>/Gain'
                                                                //    '<S12>/Gain1'
-                                                               //    '<S12>/Gain2'
-                                                               //    '<S12>/Rate Limiter'
                                                                //    '<S12>/Saturation'
+                                                               //    '<S13>/Discrete-Time Integrator'
+                                                               //    '<S13>/Gain'
+                                                               //    '<S13>/Gain1'
+                                                               //    '<S13>/Gain2'
+                                                               //    '<S13>/Rate Limiter'
+                                                               //    '<S13>/Saturation'
 
 extern controller_modes controller_mode;// Variable: controller_mode
                                            //  Referenced by: '<S1>/controller_mode'
@@ -140,12 +140,12 @@ namespace controller
    public:
     // Block signals and states (default storage) for system '<Root>'
     struct DW {
-      real32_T Saturation_m;           // '<S11>/Saturation'
+      real32_T Saturation_m;           // '<S12>/Saturation'
       real32_T uDLookupTable;          // '<S2>/1-D Lookup Table'
       real32_T DiscreteTimeIntegrator_DSTATE;// '<S18>/Discrete-Time Integrator' 
-      real32_T DiscreteTimeIntegrator_DSTATE_b;// '<S12>/Discrete-Time Integrator' 
-      real32_T UD_DSTATE;              // '<S16>/UD'
-      real32_T PrevY;                  // '<S12>/Rate Limiter'
+      real32_T DiscreteTimeIntegrator_DSTATE_b;// '<S13>/Discrete-Time Integrator' 
+      real32_T UD_DSTATE;              // '<S17>/UD'
+      real32_T PrevY;                  // '<S13>/Rate Limiter'
       boolean_T SpeedController_MODE;  // '<S1>/Speed Controller'
       boolean_T PositionController_MODE;// '<S1>/Position Controller'
     };
@@ -168,6 +168,8 @@ namespace controller
       real32_T pos_feedback;           // '<Root>/pos_feedback'
       real32_T speedDemand_ext;        // '<Root>/speedDemand_ext'
       real32_T ValveFitPressureRatios[12];// '<Root>/ValveFitPressureRatios'
+      real32_T F_demand;               // '<Root>/F_demand'
+      real32_T nozzle_gain;            // '<Root>/nozzle_gain'
     };
 
     // External outputs (root outports fed by signals with default storage)
@@ -176,6 +178,9 @@ namespace controller
       real32_T speedDemand;            // '<Root>/speedDemand'
       real32_T position_demand;        // '<Root>/position_demand'
       real32_T pos_ref_rate_limited;   // '<Root>/pos_ref_rate_limited'
+      real32_T P_nozzle_demand1;       // '<Root>/P_nozzle_demand1'
+      real32_T ThrustMax;              // '<Root>/ThrustMax'
+      real32_T ThrustEstimate;         // '<Root>/ThrustEstimate'
     };
 
     // Real-time Model Data Structure
@@ -230,28 +235,29 @@ namespace controller
 
 // Constant parameters (default storage)
 extern const controller::actuatorController::ConstP rtConstP;
+extern "C"
+{
+  extern real_T rtInf;
+  extern real_T rtMinusInf;
+  extern real_T rtNaN;
+  extern real32_T rtInfF;
+  extern real32_T rtMinusInfF;
+  extern real32_T rtNaNF;
+  static boolean_T rtIsInf(real_T value);
+  static boolean_T rtIsInfF(real32_T value);
+  static boolean_T rtIsNaN(real_T value);
+  static boolean_T rtIsNaNF(real32_T value);
+}                                      // extern "C"
 
 //-
 //  These blocks were eliminated from the model due to optimizations:
 //
-//  Block '<S15>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S15>/Data Type Propagation' : Unused code path elimination
 //  Block '<S16>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S11>/Scope' : Unused code path elimination
-//  Block '<S1>/Scope' : Unused code path elimination
-//  Block '<S13>/1-D Lookup Table' : Unused code path elimination
-//  Block '<S13>/Constant' : Unused code path elimination
-//  Block '<S13>/Divide' : Unused code path elimination
-//  Block '<S13>/Gain' : Unused code path elimination
-//  Block '<S13>/Saturation' : Unused code path elimination
+//  Block '<S16>/Data Type Propagation' : Unused code path elimination
 //  Block '<S17>/Data Type Duplicate' : Unused code path elimination
-//  Block '<S17>/Data Type Propagation' : Unused code path elimination
-//  Block '<S17>/LowerRelop1' : Unused code path elimination
-//  Block '<S17>/Switch' : Unused code path elimination
-//  Block '<S17>/Switch2' : Unused code path elimination
-//  Block '<S17>/UpperRelop' : Unused code path elimination
-//  Block '<S13>/Saturation1' : Unused code path elimination
-//  Block '<S14>/Scope' : Unused code path elimination
+//  Block '<S12>/Scope' : Unused code path elimination
+//  Block '<S1>/Scope' : Unused code path elimination
+//  Block '<S15>/Scope' : Unused code path elimination
 //  Block '<S18>/K' : Eliminated nontunable gain of 1
 
 
@@ -278,15 +284,15 @@ extern const controller::actuatorController::ConstP rtConstP;
 //  '<S6>'   : 'actuatorController/Subsystem1/Compare To Constant3'
 //  '<S7>'   : 'actuatorController/Subsystem1/Compare To Constant4'
 //  '<S8>'   : 'actuatorController/Subsystem1/Compare To Constant5'
-//  '<S9>'   : 'actuatorController/Subsystem1/Degrees to Radians'
-//  '<S10>'  : 'actuatorController/Subsystem1/Degrees to Radians1'
-//  '<S11>'  : 'actuatorController/Subsystem1/Position Controller'
-//  '<S12>'  : 'actuatorController/Subsystem1/Speed Controller'
-//  '<S13>'  : 'actuatorController/Subsystem1/Thrust Controller'
-//  '<S14>'  : 'actuatorController/Subsystem1/reference conditioning'
-//  '<S15>'  : 'actuatorController/Subsystem1/1D Valve Lookup Controller External Table/Saturation Dynamic'
-//  '<S16>'  : 'actuatorController/Subsystem1/Position Controller/Discrete Derivative'
-//  '<S17>'  : 'actuatorController/Subsystem1/Thrust Controller/Saturation Dynamic'
+//  '<S9>'   : 'actuatorController/Subsystem1/Compare To Constant6'
+//  '<S10>'  : 'actuatorController/Subsystem1/Degrees to Radians'
+//  '<S11>'  : 'actuatorController/Subsystem1/Degrees to Radians1'
+//  '<S12>'  : 'actuatorController/Subsystem1/Position Controller'
+//  '<S13>'  : 'actuatorController/Subsystem1/Speed Controller'
+//  '<S14>'  : 'actuatorController/Subsystem1/Thrust Controller'
+//  '<S15>'  : 'actuatorController/Subsystem1/reference conditioning'
+//  '<S16>'  : 'actuatorController/Subsystem1/1D Valve Lookup Controller External Table/Saturation Dynamic'
+//  '<S17>'  : 'actuatorController/Subsystem1/Position Controller/Discrete Derivative'
 //  '<S18>'  : 'actuatorController/Subsystem1/reference conditioning/first order hiz limitli filtre'
 
 #endif                                 // actuatorController_h_

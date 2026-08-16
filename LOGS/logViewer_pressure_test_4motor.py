@@ -22,7 +22,7 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-filename = "log1949.bin"
+filename = "log2014.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -76,6 +76,45 @@ for i in range(4):
 
 # ax[3].set_ylim(0,600)
 plt.savefig(filename[:-4]+'.png')
+
+fig2,ax2= plt.subplots(1,sharex=True)
+fig2.canvas.manager.set_window_title(filename+" manifold")
+
+fig2.tight_layout()
+
+ax2.grid(True)
+ax2.set_title('Manifold Pressure')
+ax2.plot(myLog.df.timestamp, myLog.df.manifold_pressure, label="Manifold Pressure")
+ax2.set_ylabel('Manifold Pressure [Psi]')
+ax2.set_xlabel("time [s]")
+ax2.legend()
+
+fig3,ax3= plt.subplots(3,sharex=True)
+fig3.canvas.manager.set_window_title(filename+" overlay")
+
+fig3.tight_layout()
+
+for i in range(4):
+	ax3[0].plot(myLog.df.timestamp, myLog.df[f"nozzle_pressure_{i}"], label=f"Nozzle Pressure {i}")
+	ax3[1].plot(myLog.df.timestamp, myLog.df[f"valveAngle_{i}"], label=f"Position Feedback {i}")
+	ax3[2].plot(myLog.df.timestamp, myLog.df[f"current_measured_{i}"], label=f"Current {i}")
+
+ax3[0].grid(True)
+ax3[0].set_title("Nozzle Pressure")
+ax3[0].set_ylabel('Nozzle Pressure [Psi]')
+ax3[0].legend()
+
+ax3[1].grid(True)
+ax3[1].set_title('Valve Position')
+ax3[1].set_ylabel("Valve Angle [deg]")
+ax3[1].legend()
+
+ax3[2].grid(True)
+ax3[2].set_title('Current')
+ax3[2].set_ylabel("current [A]")
+ax3[2].set_xlabel("time [s]")
+ax3[2].legend()
+
 plt.show()
 plt.figure()
 plt.plot(1e3*np.diff(myLog.df.timestamp),'.')

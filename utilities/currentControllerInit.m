@@ -34,7 +34,7 @@ Fs_max_ = 0.0054517494481315263;     % Yeni Statik Sürtünme (Coulomb)
 
 
 SatMax = 15;
-SatMin = -15;
+SatMin = -5;
 Ts = 1/1000;
 RateLimiterMax = 2e15;
 RateLimiterMin = -2e15;

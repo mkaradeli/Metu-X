@@ -22,7 +22,7 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-filename = "log1943.bin"
+filename = "log2010.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -86,7 +86,7 @@ ax[1].grid(True)
 # ax[2].plot(myLog.df.timestamp, myLog.df.encoderButt)
 ax[2].grid(True)
 ax[2].set_title('Force Feedback')
-ax[2].plot(myLog.df.timestamp, (myLog.df['thrust_measured'] - myLog.df['thrust_measured'][0])*9.80655,label="thrust_measured")
+ax[2].plot(myLog.df.timestamp, (myLog.df['thrust_measured'] - myLog.df['thrust_measured'][0])*9.80655,".",label="thrust_measured")
 
 ax[2].grid(True)
 ax[2].set_ylabel("Force Feedback (N)")
