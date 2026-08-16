@@ -22,7 +22,8 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-filename = "log2010.bin"
+# filename = "log2010.bin"
+filename = "live0003.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -54,7 +55,20 @@ ax[0].set_title("Nozzle Pressure")
 # except:
 	# pass
 # ax[0].plot(myLog.df["timestamp"], myLog.df["manifold_pressure"], label="manifold_pressure")
-ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure_0"], label="Nozzle Pressure")
+# ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure_0"], label="Nozzle Pressure")
+ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure_1"], label="Nozzle Pressure")
+ax[0].set_ylim(0,1000)
+# ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure_2"], label="Nozzle Pressure")
+# ax[0].plot(myLog.df["timestamp"], myLog.df["nozzle_pressure_3"], label="Nozzle Pressure")
+# ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand_0"], label="Nozzle Pressure")
+ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand_1"], label="Nozzle Pressure")
+# ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand_2"], label="Nozzle Pressure")
+# ax[0].plot(myLog.df["timestamp"], myLog.df["pressure_demand_3"], label="Nozzle Pressure")
+# pressure_demand
+# ax[0].plot(myLog.df["timestamp"], myLog.df["manifold_pressure"], label="Nozzle Pressure")
+# ax[0].plot(myLog.df["timestamp"], myLog.df["manifold_pressure"], label="Nozzle Pressure")
+
+
 ax[0].set_ylabel('Nozzle Pressure [Psi]')
 ax[0].legend()
 # ax[0].set_xlim(0,60)
@@ -64,9 +78,16 @@ ax[0].legend()
 
 ax[1].set_title('Valve Position')
 # print(myLog.valveAngle)
-ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_0, label="Position Referance")
+# ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_0, label="Position Referance")
+# ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_rate_limited_0, label="Position Referance")
+ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_1, label="Position Referance")
+# ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_2, label="Position Referance")
+# ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_3, label="Position Referance")
 # ax[1].plot(myLog.df.timestamp, myLog.df.pos_ref_rate_limited_0, label="pos_ref rate limited")
-ax[1].plot(myLog.df.timestamp, myLog.df.valveAngle_0, label="Position Feedback")
+# ax[1].plot(myLog.df.timestamp, myLog.df.valveAngle_0, label="Position Feedback")
+ax[1].plot(myLog.df.timestamp, myLog.df.valveAngle_1, label="Position Feedback")
+# ax[1].plot(myLog.df.timestamp, myLog.df.valveAngle_2, label="Position Feedback")
+# ax[1].plot(myLog.df.timestamp, myLog.df.valveAngle_3, label="Position Feedback")
 # ax[1].plot(myLog.df.timestamp, myLog.df.valveAngleKalman_0, label="valveAngleKalman")
 # ax[1].set_ylim(-100,2000)
 
@@ -91,11 +112,21 @@ ax[2].plot(myLog.df.timestamp, (myLog.df['thrust_measured'] - myLog.df['thrust_m
 ax[2].grid(True)
 ax[2].set_ylabel("Force Feedback (N)")
 
-ax[3].plot(myLog.df.timestamp, myLog.df.current_demand_0, label = "demand")
-ax[3].plot(myLog.df.timestamp, myLog.df.current_measured_0, label="measured")
+ax[3].plot(myLog.df.timestamp, myLog.df.thrust_estimated_0, label = "demand")
+ax[3].plot(myLog.df.timestamp, myLog.df.thrust_estimated_1, label = "demand")
+ax[3].plot(myLog.df.timestamp, myLog.df.thrust_estimated_2, label = "demand")
+ax[3].plot(myLog.df.timestamp, myLog.df.thrust_estimated_3, label = "demand")
+# ax[3].plot(myLog.df.timestamp, myLog.df.current_measured_0, label="measured")
 ax[3].grid(True)
-ax[3].set_ylabel("current [A]")
+ax[3].set_ylabel("FORCE [N]")
 ax[3].set_xlabel("time [s]")
+plt.figure()
+plt.plot(myLog.df.timestamp, myLog.df.speedDemand_3, label='demand')
+plt.plot(myLog.df.timestamp, myLog.df.valveVelocity_3,label='feed')
+plt.xlim(0,30)
+plt.ylim(-2500,2500)
+plt.title('speed')
+plt.legend()
 
 
 # ax[3].set_ylim(0,600)
