@@ -23,7 +23,7 @@ if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
 # filename = "log2010.bin"
-filename = "live0003.bin"
+filename = "live0001.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -120,6 +120,8 @@ ax[3].plot(myLog.df.timestamp, myLog.df.thrust_estimated_3, label = "demand")
 ax[3].grid(True)
 ax[3].set_ylabel("FORCE [N]")
 ax[3].set_xlabel("time [s]")
+
+
 plt.figure()
 plt.plot(myLog.df.timestamp, myLog.df.speedDemand_3, label='demand')
 plt.plot(myLog.df.timestamp, myLog.df.valveVelocity_3,label='feed')
@@ -136,6 +138,10 @@ plt.figure()
 plt.plot(1e3*np.diff(myLog.df.timestamp),'.')
 plt.ylabel("entry period [ms]")
 plt.xlabel("entry id")
+plt.grid(1)
+
+plt.figure("lidar_height")
+plt.plot(myLog.df.timestamp,myLog.df.lidar_height)
 plt.grid(1)
 plt.show()
 print(f"logging period std= {np.std(1e6*np.diff(myLog.df.timestamp)):.3} us")

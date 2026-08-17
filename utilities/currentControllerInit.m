@@ -76,7 +76,7 @@ controllerGains.position.Ts = double(Ts);
 
 
 %% PRESSURE CONTROLLER
-controllerGains.pressure.Kp = single(0.0);
+controllerGains.pressure.Kp = single(30/200); % 30˚ correction for 200 psi error
 % controllerGains.pressure.Kp = single(0.0);
 
 clear("SatMin", "SatMax", "Kp","Kff", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
