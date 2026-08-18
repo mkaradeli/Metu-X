@@ -59,6 +59,33 @@ slbuild(actuatorController);
 kalman_filter = 'actuatorKalman';
 slbuild(kalman_filter);
 
+%% platform Controller
+
+platformControllerTargets;
+
+
+% platform_targets = controller_modes.DISABLE;
+platform_targets = Simulink.Parameter(platform_targets);
+platform_targets.CoderInfo.StorageClass = "ExportedGlobal";
+platform_targets.CoderInfo.Identifier = "platform_targets";
+
+
+assignin('base', 'platform_targets', platform_targets);
+
+mission_mode.CoderInfo.StorageClass = "ExportedGlobal";
+assignin('base', 'mission_mode', mission_mode);
+
+platformController = 'platformController';
+if ~bdIsLoaded(platformController)
+    load_system(platformController);
+end
+set_param(platformController, ...
+    'GenCodeOnly', 'on', ...           % set to 'on' to only generate code
+    'GenerateReport', 'off', ...
+    'SolverType', 'Fixed-step', ...  % 'Solver', 'FixedStepDiscrete', ...
+    'FixedStep', '1/50');
+save_system(platformController);
+slbuild(platformController);
 
 %% codu paketle
 % sourceFolder = fullfile(pwd, 'codegen', actuatorController + "_ert_rtw");
@@ -93,6 +120,12 @@ copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 sourceFolder = fullfile(pwd, 'codegen', actuatorController + "_ert_rtw");
 copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder+"/src");
 copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
+
+% .c ve .h dosyalarını kopyala
+sourceFolder = fullfile(pwd, 'codegen', platformController + "_ert_rtw");
+copyfile(fullfile(sourceFolder, '*.cpp'), destinationFolder+"/src");
+copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
+
 
 
 delete(fullfile(destinationFolder, 'src', "ert_main.cpp"));

@@ -111,6 +111,11 @@ controller_mode = Simulink.Parameter(controller_mode);
 controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
 controller_mode.CoderInfo.Identifier = "controller_mode";
 
+mission_mode = mission_modes.DISABLE;
+mission_mode = Simulink.Parameter(mission_mode);
+mission_mode.CoderInfo.StorageClass = "ExportedGlobal";
+mission_mode.CoderInfo.Identifier = "mission_mode";
+
 current_ref = Simulink.Signal;
 % current_ref.StorageClass = 'ImportedExtern';
 current_ref.CoderInfo.StorageClass = "Custom";
