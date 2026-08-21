@@ -34,7 +34,7 @@ Fs_max_ = 0.0054517494481315263;     % Yeni Statik Sürtünme (Coulomb)
 
 
 SatMax = 15;
-SatMin = -5;
+SatMin = -15;
 Ts = 1/1000;
 RateLimiterMax = 2e15;
 RateLimiterMin = -2e15;
@@ -76,7 +76,8 @@ controllerGains.position.Ts = double(Ts);
 
 
 %% PRESSURE CONTROLLER
-controllerGains.pressure.Kp = single(0.0);
+controllerGains.pressure.Kp = single(0.4); % 30˚ correction for 200 psi error
+controllerGains.pressure.Ki = single(3); % 30˚ correction for 200 psi error
 % controllerGains.pressure.Kp = single(0.0);
 
 clear("SatMin", "SatMax", "Kp","Kff", "Ki", "Ts", "f_position","f_speed", "f_current", "RateLimiterMin", "RateLimiterMax");
@@ -109,6 +110,11 @@ controller_mode = controller_modes.DISABLE;
 controller_mode = Simulink.Parameter(controller_mode);
 controller_mode.CoderInfo.StorageClass = "ExportedGlobal";
 controller_mode.CoderInfo.Identifier = "controller_mode";
+
+mission_mode = mission_modes.DISABLE;
+mission_mode = Simulink.Parameter(mission_mode);
+mission_mode.CoderInfo.StorageClass = "ExportedGlobal";
+mission_mode.CoderInfo.Identifier = "mission_mode";
 
 current_ref = Simulink.Signal;
 % current_ref.StorageClass = 'ImportedExtern';
