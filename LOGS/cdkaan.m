@@ -1,5 +1,5 @@
 % Define the filename
-filename = 'log2005.csv';
+filename = 'log2004.csv';
 % Read the data into a table
 dataTable = readtable(filename, 'PreserveVariableNames', true);
 headers = dataTable.Properties.VariableNames;

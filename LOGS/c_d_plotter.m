@@ -1,100 +1,99 @@
-% Define the filename
-filename = 'log1164.csv';
+% 4 vana kayip orani - coklu test birlestirme
+% oran = P_lule / P_manifold
 
-% ---------------------------------------------------------
-% Optional Filtering Parameters
-% ---------------------------------------------------------
-applyPressureFilter = true;   % Set to true to enable filtering, false to disable
-minPressureThreshold = 150;   % Minimum nozzle pressure to include in the analysis
+sources = { ...
+    'log1991.csv', 100:100:400;   ... % missionID 1 - artan profil
+    'log2014.csv', 500:100:600;   ... % missionID 4 - 500 -> 800 profili
+    'log2015.csv', 800:100:900;   ... % missionID 5 - 900 -> 500 profili
+    'log1992.csv', 1100:100:1200};    % missionID 2 - azalan profil
 
-% Read the data into a table
-dataTable = readtable(filename, 'PreserveVariableNames', true);
-headers = dataTable.Properties.VariableNames;
+nSources = size(sources, 1);
 
-% Search for the specific column indices
-pressureColIdx = find(strcmp(headers, 'nozzle_pressure_0'));
-thrustColIdx = find(strcmp(headers, 'thrust_measured'));
+% Tum testlerden toplanan steady-state noktalari (birlesik havuz)
+ratio_all       = [];
+valve_angle_all = [];
+lule_id_all     = [];   % hangi lule (1-4)
+source_id_all   = [];   % hangi test dosyasindan geldi
 
-% Error handling
-if isempty(pressureColIdx) || isempty(thrustColIdx)
-    error('Could not find "nozzle_pressure_0" or "thrust_measured" in the CSV headers.');
+for s = 1:nSources
+    filename = sources{s, 1};
+
+    dataTable = readtable(filename, 'PreserveVariableNames', true);
+    headers = dataTable.Properties.VariableNames;
+
+    manifold_pressure = dataTable{:, find(strcmp(headers, 'manifold_pressure'))};
+
+    nozzle_pressure = zeros(height(dataTable), 4);
+    valve_angle     = zeros(height(dataTable), 4);
+    valve_velocity  = zeros(height(dataTable), 4);
+
+    for i = 0:3
+        nozzle_pressure(:, i+1) = dataTable{:, find(strcmp(headers, sprintf('nozzle_pressure_%d', i)))};
+        valve_angle(:, i+1)     = dataTable{:, find(strcmp(headers, sprintf('valveAngle_%d', i)))};
+        valve_velocity(:, i+1)  = dataTable{:, find(strcmp(headers, sprintf('valveVelocity_%d', i)))};
+    end
+
+    n = height(dataTable);
+    t = (0:n-1)';   % zaman kolonu varsa: t = dataTable{:, find(strcmp(headers,'time'))};
+
+    % --- Oran ---
+    ratio = nan(n, 4);
+    for i = 1:4
+        ok = (manifold_pressure > 300) & (valve_angle(:,i) > 5) & (nozzle_pressure(:,i) > 0);
+        ratio(ok, i) = nozzle_pressure(ok, i) ./ manifold_pressure(ok);
+    end
+
+    % --- Bu teste ait zaman grafikleri ---
+    figure('Name', sprintf('%s - zaman serisi', filename));
+
+    subplot(3,1,1);
+    plot(t, manifold_pressure, 'k', 'LineWidth', 1.5); hold on;
+    for i = 1:4
+        plot(t, nozzle_pressure(:,i), 'LineWidth', 1);
+    end
+    grid on; ylabel('Basinc [psi]'); title(filename, 'Interpreter', 'none');
+    legend('Manifold','Lule 0','Lule 1','Lule 2','Lule 3','Location','best');
+
+    subplot(3,1,2);
+    for i = 1:4
+        plot(t, ratio(:,i), 'LineWidth', 1.2); hold on;
+    end
+    grid on; ylabel('P_{lule} / P_{manifold}'); ylim([0 1]);
+    legend('Lule 0','Lule 1','Lule 2','Lule 3','Location','best');
+
+    subplot(3,1,3);
+    for i = 1:4
+        plot(t, valve_angle(:,i), 'LineWidth', 1.2); hold on;
+    end
+    grid on; ylabel('Vana Acisi [deg]'); xlabel('time');
+    legend('Vana 0','Vana 1','Vana 2','Vana 3','Location','best');
+
+    % --- Steady-state noktalarini birlesik havuza ekle ---
+    for i = 1:4
+        steady = isfinite(ratio(:,i)) & (abs(valve_velocity(:,i)) < 30);
+        k = sum(steady);
+        ratio_all       = [ratio_all;       ratio(steady, i)];
+        valve_angle_all = [valve_angle_all; valve_angle(steady, i)];
+        lule_id_all     = [lule_id_all;     repmat(i, k, 1)];
+        source_id_all   = [source_id_all;   repmat(s, k, 1)]; %#ok<AGROW>
+    end
 end
 
-% Extract the data series
-pressure = dataTable{:, pressureColIdx};
-thrust = dataTable{:, thrustColIdx};
-
-% 1. Initial Cleaning: Remove NaNs
-validData = ~isnan(pressure) & ~isnan(thrust);
-pressure = pressure(validData);
-thrust = thrust(validData);
-
-% 2. Optional Filtering: Skip data below the pressure threshold
-if applyPressureFilter
-    % Create a logical index of points that meet the condition
-    filterIdx = pressure >= minPressureThreshold;
-    
-    % Inform the user in the command window
-    pointsRemoved = sum(~filterIdx);
-    fprintf('Pressure filter active: Removed %d points below %.2f.\n', pointsRemoved, minPressureThreshold);
-    
-    % Apply the filter
-    pressure = pressure(filterIdx);
-    thrust = thrust(filterIdx);
+% --- Tum testler birlesik: Oran vs vana acisi ---
+figure('Name', 'Tum testler - Oran vs Vana Acisi');
+colors = lines(4);
+for i = 1:4
+    m = (lule_id_all == i);
+    plot(valve_angle_all(m), ratio_all(m), '.', 'MarkerSize', 8, 'Color', colors(i,:)); hold on;
 end
+grid on; xlabel('Vana Acisi [deg]'); ylabel('P_{lule} / P_{manifold}'); ylim([0 1]);
+legend('Lule 0','Lule 1','Lule 2','Lule 3','Location','best');
+title('Tum test loglari birlestirilmis (log1991, log2014, log2015, log1992)');
 
-% 3. Outlier Detection:
-% Perform an initial fit to establish a baseline
-initialCoeffs = polyfit(pressure, thrust, 1);
-initialFit = polyval(initialCoeffs, pressure);
-
-% Calculate the residuals
-residuals = thrust - initialFit;
-
-% Identify outliers based on the Median Absolute Deviation (MAD)
-outlierFlags = isoutlier(residuals, 'median');
-
-% Separate the data into clean points and outliers
-pressure_outliers = pressure(outlierFlags);
-thrust_outliers = thrust(outlierFlags);
-pressure_clean = pressure(~outlierFlags);
-thrust_clean = thrust(~outlierFlags);
-
-% 4. Final Fit: Calculate c_d using only the clean data
-finalCoeffs = polyfit(pressure_clean, thrust_clean, 1);
-c_d = finalCoeffs(1);
-offset = finalCoeffs(2);
-
-% Display the result in the command window
-fprintf('Removed %d outlier points.\n', sum(outlierFlags));
-fprintf('The constant gain (c_d) is calculated as: %.4f\n', c_d);
-fprintf('The linear offset is: %.4f\n', offset);
-
-% ---------------------------------------------------------
-% Plotting the data, the fit, and the c_d value
-% ---------------------------------------------------------
-figure;
-hold on;
-
-% Plot Outliers (Red Crosses) and Clean Data (Blue Dots)
-scatter(pressure_outliers, thrust_outliers, 'rx', 'DisplayName', 'Outliers');
-scatter(pressure_clean, thrust_clean, 'b.', 'DisplayName', 'Clean Data');
-
-% Create points for the fitted line using the clean data range
-[pressure_sorted, sortIdx] = sort(pressure_clean);
-fitLine = polyval(finalCoeffs, pressure_sorted);
-plot(pressure_sorted, fitLine, 'k-', 'LineWidth', 2, 'DisplayName', 'Linear Fit (Clean)');
-
-% Write the c_d value directly onto the figure
-c_d_Text = sprintf('Constant Gain (c_d) = %.4f', c_d);
-text(0.05, 0.90, c_d_Text, 'Units', 'normalized', ...
-    'FontSize', 12, 'FontWeight', 'bold', 'BackgroundColor', 'white', ...
-    'EdgeColor', 'black');
-
-% Formatting the plot
-xlabel('Nozzle Pressure (nozzle\_pressure\_0)');
-ylabel('Measured Thrust (thrust\_measured)');
-title('Thrust vs. Pressure with Outlier Rejection');
-legend('Location', 'best');
-grid on;
-hold off;
+% --- Tam acikta oran (tum testlerin birlesik verisiyle) ---
+for i = 1:4
+    m = (lule_id_all == i);
+    thr = 0.9 * max(valve_angle_all(m));
+    m_full = m & (valve_angle_all > thr);
+    fprintf('Lule %d tam acik oran: %.4f\n', i-1, median(ratio_all(m_full), 'omitnan'));
+end

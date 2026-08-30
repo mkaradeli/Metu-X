@@ -1,7 +1,7 @@
 % Iki test profilinin manifold/nozzle basinc oranini ust uste cizdirme
 % log1991: artan aci profili, log1992: azalan aci profili
 
-file_1 = 'log1991.csv';
+file_1 = 'log2232.csv';
 file_2 = 'log1992.csv';
 
 N_VALVE      = 4;

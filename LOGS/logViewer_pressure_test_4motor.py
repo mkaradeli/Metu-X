@@ -22,7 +22,7 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-filename = "log2014.bin"
+filename = "live_atis.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -38,10 +38,14 @@ filename = "log2014.bin"
 # 		try:
 myLog = log_processor(filename)
 
+CD = [0.1699, 0.1723, 0.1730, 0.1763]
+for i in range(4):
+	myLog.df[f"F_estimate_{i}"] = CD[i] * myLog.df[f"nozzle_pressure_{i}"]
 
 
 
-fig,ax= plt.subplots(3,4,sharex=True)
+
+fig,ax= plt.subplots(4,4,sharex=True)
 fig.canvas.manager.set_window_title(filename)
 
 fig.tight_layout()
@@ -71,7 +75,12 @@ for i in range(4):
 	ax[2][i].plot(myLog.df.timestamp, myLog.df[f"current_measured_{i}"], label="measured")
 	ax[2][i].grid(True)
 	ax[2][i].set_ylabel("current [A]")
-	ax[2][i].set_xlabel("time [s]")
+
+	ax[3][i].plot(myLog.df.timestamp, myLog.df[f"F_estimate_{i}"], label="F_estimate")
+	ax[3][i].grid(True)
+	ax[3][i].set_ylabel("F_estimate [N]")
+	ax[3][i].set_xlabel("time [s]")
+	ax[3][i].legend()
 
 
 # ax[3].set_ylim(0,600)
