@@ -19,11 +19,11 @@ platform_targets.v_blend = sqrt( platform_targets.V_td^2 + 2*platform_targets.a_
 %% altitude
 platform_targets.altitude.kP = 9.8;
 platform_targets.altitude.kI = platform_targets.altitude.kP^2/3;
-
+platform_targets.altitude.kP_hover = 2.3;
+platform_targets.altitude.kI_hover = platform_targets.altitude.kP_hover^2/3;
 %% hover 
-platform_targets.hover.h_ref = 5;
-platform_targets.hover.Kh = 3; % 1/s
-platform_targets.hover.Kha = 3;
+platform_targets.hover.h_ref = 3;
+platform_targets.hover.Kh = 4; % 1/s
 platform_targets.hover.v_sat = [-1.0 2.2];
 
 %% attitude
@@ -39,11 +39,4 @@ platform_targets.attitude.Alloc = [ 1  1  1  1 ;
                                    -r  r  0  0 ;
                                     0  0  0  0 ];
 
-%% test duzenegi (askı halatı)
-rig.k       = 145;                                  % N/m
-rig.h_rest  = 2.0;                                  % m, itki yokken asili durdugu irtifa
-rig.m_test  = mass.empty + 2.83;                    % 34.33 kg
-rig.h_slack = rig.h_rest + rig.m_test*9.81/rig.k;   % 4.32 m
-rig.zeta    = 0.05;                                 % <-- log dekrementten cikar
-rig.c       = 2*rig.zeta*sqrt(rig.k*rig.m_test);    % 7.1 N.s/m
 

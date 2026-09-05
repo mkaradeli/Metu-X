@@ -23,7 +23,7 @@ if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
 # filename = "log2010.bin"
-filename = "live0009.bin"
+filename = "log2323.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
