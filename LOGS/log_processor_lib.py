@@ -1231,7 +1231,7 @@ class  log_processor():
 
 			# 2x skips start[2] sync bytes; tail: manifold_pressure, manifold_raw,
 			# thrust_measured, thrust_raw, crc
-			self.struct_format = '<2xI' + ACT_FMT * N_ACT + '15fHHff6IfH'   # 280 bytes
+			self.struct_format = '<2xI' + ACT_FMT * N_ACT + '15fHHff6BfH'   # 280 bytes
 			if self.struct_size != struct.calcsize(self.struct_format):
 				print('struct format is wrong.')
 				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
