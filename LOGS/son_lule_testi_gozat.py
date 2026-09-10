@@ -110,36 +110,40 @@ ax3[2].legend()
 
 ####################
 
-fig8,ax8= plt.subplots(1,sharex=True)
-fig8.canvas.manager.set_window_title(filename+" Ham Ölçülen İtki")
+fig4,ax4= plt.subplots(1,sharex=True)
+fig4.canvas.manager.set_window_title(filename+" Ham Ölçülen İtki")
 
-fig8.tight_layout()
+fig4.tight_layout()
 
-ax8.grid(True)
-ax8.set_title('F_estimated')
+ax4.grid(True)
+ax4.set_title('F_estimated')
 
-ax8.plot(myLog.df.timestamp, myLog.df.thrust_measured, label="İtki Ham")
+ax4.plot(myLog.df.timestamp, myLog.df.thrust_measured, label="İtki Ham")
 
-ax8.set_xlabel("Time (s)")
-ax8.set_ylabel('İtki')
+ax4.set_xlabel("Time (s)")
+ax4.set_ylabel('İtki')
 
-ax8.legend()
+ax4.legend()
 
 ####################
-boyut1 = myLog.df.thrust_measured.shape()[0]
+boyut1, boyut2 = myLog.df.thrust_measured.shape[0], 1
+
 print(boyut1)
-dara = sum(myLog.df.thrust_measured.head(10))/10
-print(dara)
-dara_vektoru = pd.DataFrame() * dara
+
+
+dara = myLog.df.thrust_measured.head(10).mean()
+print(f'Dara: {dara}')
+
+##dara_vektoru = pd.DataFrame(np.ones((boyut1, boyut2)) * dara) Gereksizmis. Skalar islem her hucreye uygulanir.
 fig5,ax5= plt.subplots(1,sharex=True)
-fig5.canvas.manager.set_window_title(filename+" Net İtki")
+fig5.canvas.manager.set_window_title(filename+" Daralı/Oranlı Net İtki")
 
 fig5.tight_layout()
 
 ax5.grid(True)
-ax5.set_title('Kuvvet kolu çarpanıyla çarpılmış İtki')
-
-ax5.plot(myLog.df.timestamp, (myLog.df.thrust_measured - dara_vektoru) / 1.87, label="Net İtki")
+ax5.set_title('Darası alınmış ve kuvvet kolu çarpanıyla çarpılmış itki')
+itki_temiz = (myLog.df.thrust_measured - dara) / 1.87
+ax5.plot(myLog.df.timestamp, itki_temiz, label="Net İtki")
 
 ax5.set_xlabel("Time (s)")
 ax5.set_ylabel('İtki (kg)')
