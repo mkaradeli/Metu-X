@@ -12,7 +12,6 @@ def bin_den_csv_ye(bin_dosya_yolu, csv_dosya_yolu, format, basliklar):
 
         # once bizim belirledigimiz basliklari yazcaz
         yazici.writerow(basliklar)
-
         bin_dosyasi.seek(512)
         while True:
             bin_adimi = bin_dosyasi.read(kayit_boyutu)
