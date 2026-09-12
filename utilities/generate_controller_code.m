@@ -49,6 +49,7 @@ set_param(actuatorController, ...
     'GenerateReport', 'off', ...
     'SolverType', 'Fixed-step', ...
     'Solver', 'FixedStepDiscrete', ...
+    'SupportNonFinite','off', ...
     'FixedStep', '1e-3');
 save_system(actuatorController);
 slbuild(actuatorController);
@@ -82,8 +83,8 @@ end
 set_param(platformController, ...
     'GenCodeOnly', 'on', ...           % set to 'on' to only generate code
     'GenerateReport', 'off', ...
-    'SolverType', 'Fixed-step', ...  % 'Solver', 'FixedStepDiscrete', ...
-    'FixedStep', '1/1000');
+    'SolverType', 'Fixed-step');  % 'Solver', 'FixedStepDiscrete', ...
+    
 save_system(platformController);
 slbuild(platformController);
 
@@ -131,8 +132,8 @@ copyfile(fullfile(sourceFolder, '*.h'), destinationFolder+"/inc");
 delete(fullfile(destinationFolder, 'src', "ert_main.cpp"));
 
 
-if exist(fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/metux-h753/app/Controller/"), 'dir')
-    copyfile(fullfile(destinationFolder), fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/metux-h753/app/Controller/"))
+if exist(fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/MetuX/CM7/app/Controller/"), 'dir')
+    copyfile(fullfile(destinationFolder), fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/MetuX/CM7/app/Controller/"))
 elseif exist(fullfile(pwd,"../../Metu-X-stm32/app/"), 'dir')
     copyfile(fullfile(destinationFolder), fullfile(pwd,"../../Metu-X-stm32/app/Controller/"))
     
