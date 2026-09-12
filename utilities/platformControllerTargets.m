@@ -19,11 +19,12 @@ platform_targets.v_blend = sqrt( platform_targets.V_td^2 + 2*platform_targets.a_
 %% altitude
 platform_targets.altitude.kP = 9.8;
 platform_targets.altitude.kI = platform_targets.altitude.kP^2/3;
-platform_targets.altitude.kP_hover = 2.3;
-platform_targets.altitude.kI_hover = platform_targets.altitude.kP_hover^2/3;
+platform_targets.altitude.kP_hover = 24.4;
+platform_targets.altitude.kI_hover = platform_targets.altitude.kP_hover^2/4.5;
 %% hover 
-platform_targets.hover.h_ref = 3;
-platform_targets.hover.Kh = 4; % 1/s
+platform_targets.hover.h_ref = 4;
+platform_targets.hover.Kh = 4.5; % 1/s
+platform_targets.hover.Khv = 8; % 1/s
 platform_targets.hover.v_sat = [-1.0 2.2];
 
 %% attitude
