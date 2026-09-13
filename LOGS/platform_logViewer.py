@@ -22,7 +22,9 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-filename = "live_atis.BIN"
+filename = "LOG2114.BIN"
+filename = "LOG2116.BIN"
+
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -75,6 +77,7 @@ for i in range(4):
 	ax[2][i].plot(myLog.df.timestamp, myLog.df[f"current_demand_{i}"], label = "demand")
 	ax[2][i].plot(myLog.df.timestamp, myLog.df[f"current_measured_{i}"], label="measured")
 	ax[2][i].grid(True)
+	ax[2][i].legend()
 	ax[2][i].set_ylabel("current [A]")
 
 	ax[3][i].plot(myLog.df.timestamp, myLog.df[f"F_estimate_{i}"], label="F_estimate")
@@ -110,6 +113,7 @@ for i in range(4):
 
 	ax3[1].plot(myLog.df.timestamp, myLog.df[f"valveAngle_{i}"], label=f"Position Feedback {i}")
 	ax3[2].plot(myLog.df.timestamp, myLog.df[f"current_measured_{i}"], label=f"Current {i}")
+	ax3[2].legend()
 
 ax3[0].grid(True)
 ax3[0].set_title("Nozzle Pressure")
@@ -289,21 +293,57 @@ ax10.legend()
 
 # Plotu atesle
 
-fig11,ax11= plt.subplots(2,sharex=True)
+fig11,ax11= plt.subplots(3,sharex=True)
 fig11.canvas.manager.set_window_title(filename+" F_estimated 4lü üst üste")
-ax11[0].plot(myLog.df.timestamp, myLog.df.angular_velocity_demand_x, label = "velocity_demand_x")
-ax11[0].plot(myLog.df.timestamp, myLog.df.angular_velocity_x, label = "velocity_x")
+ax11[0].plot(myLog.df.timestamp, myLog.df.angular_velocity_demand_x, label = "angular velocity_demand_x")
+ax11[0].plot(myLog.df.timestamp, myLog.df.angular_velocity_x, label = "angular velocity_x")
 ax11[0].legend()
 ax11[0].grid(True)
 
-ax11[1].plot(myLog.df.timestamp, myLog.df.angular_velocity_demand_y, label = "velocity_demand_y")
-ax11[1].plot(myLog.df.timestamp, myLog.df.angular_velocity_y, label = "velocity_y")
+ax11[1].plot(myLog.df.timestamp, myLog.df.angular_velocity_demand_y, label = "angular velocity_demand_y")
+ax11[1].plot(myLog.df.timestamp, myLog.df.angular_velocity_y, label = "angular velocity_y")
 ax11[1].legend()
 ax11[1].grid(True)
+
+ax11[2].plot(myLog.df.timestamp, roll / pi * 180, label="roll")
+ax11[2].plot(myLog.df.timestamp, pitch / pi * 180, label="pitch")
+ax11[2].legend()
+ax11[2].grid()
+
 
 # ax11[2].plot(myLog.df.timestamp, myLog.df.angular_velocity_demand_z, label = "velocity_demand_z")
 # ax11[2].plot(myLog.df.timestamp, myLog.df.angular_velocity_z, label = "velocity_z")
 # ax11[2].legend()
+
+fig12,ax12= plt.subplots(3,sharex=True)
+fig12.canvas.manager.set_window_title(filename+"altitude controller")
+ax12[0].plot(myLog.df.timestamp,myLog.df.kf_altitude, label='altitude')
+ax12[0].plot(myLog.df.timestamp,myLog.df.kf_altitude*0+0.38, label = 'h ref')
+ax12[0].grid()
+ax12[0].legend()
+
+ax12[1].plot(myLog.df.timestamp,myLog.df.velocity_target, label = "V ref")
+ax12[1].plot(myLog.df.timestamp,myLog.df.kf_velocity, label = "V meas") 
+ax12[1].grid()
+ax12[1].legend()
+
+ax12[2].plot(myLog.df.timestamp,myLog.df.acceleration_feedforward, label = 'a_ff')
+ax12[2].plot(myLog.df.timestamp,myLog.df.acceleration_command, label = 'a_cmd')
+ax12[2].grid()
+ax12[2].legend()
+
+fig13,ax13= plt.subplots(1,sharex=True)
+fig13.canvas.manager.set_window_title(filename+"altitude controller2")
+ax13.plot(myLog.df.timestamp, myLog.df.vertical_thrust_command, label = "vertical_thrust_command")
+ax13.plot(myLog.df.timestamp, myLog.df.thrust_estimated_0,".", label = "act 1")
+ax13.plot(myLog.df.timestamp, myLog.df.thrust_estimated_1,".", label = "act 2")
+ax13.plot(myLog.df.timestamp, myLog.df.thrust_estimated_2,".", label = "act 3")
+ax13.plot(myLog.df.timestamp, myLog.df.thrust_estimated_3,".", label = "act 4")
+ax13.grid()
+ax13.legend()
+
+
+
 
 plt.show()
 plt.figure()
@@ -311,6 +351,8 @@ plt.plot(1e3*np.diff(myLog.df.timestamp),'.')
 plt.ylabel("entry period [ms]")
 plt.xlabel("entry id")
 plt.grid(1)
+
+
 #plt.show()
 print(f"logging period std= {np.std(1e6*np.diff(myLog.df.timestamp)):.3} us")
 print(f"logging period mean= 1.0 ms + {-1000+np.mean(1e6*np.diff(myLog.df.timestamp))} us")
