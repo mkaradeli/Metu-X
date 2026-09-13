@@ -1,7 +1,7 @@
 
 platform_targets = struct();
-platform_targets.V_td = 0.1; % m/s
-platform_targets.h_cut   = 0; % m
+platform_targets.V_td = 0.4; % m/s 0.4
+platform_targets.h_cut   = 0.35; % m 0.3
 platform_targets.h_blend = 1; % m
 
 
@@ -17,7 +17,7 @@ platform_targets.fs = 50;
 
 
 %% altitude
-platform_targets.altitude.kP = 12;
+platform_targets.altitude.kP = 9.8;
 platform_targets.altitude.kI = 9.8^2/3;
 platform_targets.altitude.kP_hover = 24.4/1.3;
 platform_targets.altitude.kI_hover = platform_targets.altitude.kP_hover^2/4.5;

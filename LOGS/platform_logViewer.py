@@ -25,7 +25,8 @@ print(filename)
 filename = "LOG2114.BIN"
 # filename = "LOG2116.BIN"
 # filename = "tlm_20260913_182610.bin"
-
+filename = "tlm_20260913_223900.bin"
+filename = "tlm_20260914_001055.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -319,7 +320,7 @@ ax11[2].grid()
 fig12,ax12= plt.subplots(3,sharex=True)
 fig12.canvas.manager.set_window_title(filename+"altitude controller")
 ax12[0].plot(myLog.df.timestamp,myLog.df.kf_altitude, label='altitude')
-ax12[0].plot(myLog.df.timestamp,myLog.df.kf_altitude*0+0.38, label = 'h ref')
+# ax12[0].plot(myLog.df.timestamp,myLog.df.kf_altitude*0+0.38, label = 'h ref')
 ax12[0].grid()
 ax12[0].legend()
 
