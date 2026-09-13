@@ -1,24 +1,24 @@
 
 platform_targets = struct();
 platform_targets.V_td = 0.1; % m/s
-platform_targets.h_cut = 0.25; % m
+platform_targets.h_cut   = 0; % m
 platform_targets.h_blend = 1; % m
 
 
-platform_targets.a_dec =9; %
-platform_targets.a_dec_high = 15; % m/s2
+platform_targets.a_dec =10; %
+% platform_targets.a_dec_high = 15; % m/s2
 platform_targets.a_dec_low = 5; % m/s2
 
 
 platform_targets.V_max = 12; % m/s
 platform_targets.Ts = 1/50;
 platform_targets.fs = 50;
-platform_targets.v_blend = sqrt( platform_targets.V_td^2 + 2*platform_targets.a_dec_low*(platform_targets.h_blend - platform_targets.h_cut));  %  /* precompute, constant */
+% platform_targets.v_blend = sqrt( platform_targets.V_td^2 + 2*platform_targets.a_dec_low*(platform_targets.h_blend - platform_targets.h_cut));  %  /* precompute, constant */
 
 
 %% altitude
-platform_targets.altitude.kP = 9.8;
-platform_targets.altitude.kI = platform_targets.altitude.kP^2/3;
+platform_targets.altitude.kP = 12;
+platform_targets.altitude.kI = 9.8^2/3;
 platform_targets.altitude.kP_hover = 24.4/1.3;
 platform_targets.altitude.kI_hover = platform_targets.altitude.kP_hover^2/4.5;
 %% hover 
@@ -42,3 +42,8 @@ platform_targets.attitude.Alloc = [ 1  1  1  1 ;
 
 
 platform_targets.attitude.cog = [0 0.0 0];
+
+
+
+%% lookup
+load("drop_lookup_table.mat")

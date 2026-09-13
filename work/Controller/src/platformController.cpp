@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'platformController'.
 //
-// Model version                  : 1.100
+// Model version                  : 1.101
 // Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
-// C/C++ source code generated on : Sun Sep 13 15:39:53 2026
+// C/C++ source code generated on : Sun Sep 13 22:10:03 2026
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -23,20 +23,18 @@
 #include "rtwtypes.h"
 
 // Exported block parameters
-struct_mDMskPTuLBbAOKfKE3o5aB platform_targets{
+struct_RzX5A87yYhLUhlAxm0ffzC platform_targets{
   0.1,
-  0.25,
+  0.0,
   1.0,
-  9.0,
-  15.0,
+  10.0,
   5.0,
   12.0,
   0.02,
   50.0,
-  2.7404379212089442,
 
   {
-    9.8,
+    12.0,
     32.013333333333343,
     18.769230769230766,
     78.285338593030872
@@ -80,13 +78,13 @@ struct_mDMskPTuLBbAOKfKE3o5aB platform_targets{
                                           //    '<S4>/Saturation1'
                                           //    '<S4>/Saturation3'
                                           //    '<S7>/Constant'
-                                          //    '<S73>/Constant6'
-                                          //    '<S137>/Gain3'
-                                          //    '<S138>/Gain4'
-                                          //    '<S138>/Gain5'
-                                          //    '<S167>/Kb'
-                                          //    '<S172>/Integral Gain'
-                                          //    '<S180>/Proportional Gain'
+                                          //    '<S72>/Constant6'
+                                          //    '<S136>/Gain3'
+                                          //    '<S137>/Gain4'
+                                          //    '<S137>/Gain5'
+                                          //    '<S166>/Kb'
+                                          //    '<S171>/Integral Gain'
+                                          //    '<S179>/Proportional Gain'
 
 
 mission_modes mission_mode{ mission_modes::DISABLE };// Variable: mission_mode
@@ -270,8 +268,8 @@ void PlatformController::step()
 
   // RateTransition: '<S2>/Rate Transition5' incorporates:
   //   Inport: '<Root>/Dropped'
-  //   Logic: '<S135>/Logical Operator3'
-  //   Switch: '<S135>/Switch'
+  //   Logic: '<S134>/Logical Operator3'
+  //   Switch: '<S134>/Switch'
 
   if (tmp && tmp_0) {
     rtDW.RateTransition5_Buffer = rtU.Dropped;
@@ -280,8 +278,8 @@ void PlatformController::step()
   if (tmp_0) {
     rtb_RateTransition5 = rtDW.RateTransition5_Buffer;
 
-    // DiscreteIntegrator: '<S134>/Discrete-Time Integrator' incorporates:
-    //   DiscreteIntegrator: '<S72>/Discrete-Time Integrator'
+    // DiscreteIntegrator: '<S133>/Discrete-Time Integrator' incorporates:
+    //   DiscreteIntegrator: '<S71>/Discrete-Time Integrator'
     //   Logic: '<S3>/NOT'
     //   Logic: '<S4>/NOT'
 
@@ -291,40 +289,40 @@ void PlatformController::step()
       rtDW.DiscreteTimeIntegrator_DSTATE = 0.0;
     }
 
-    // Logic: '<S134>/AND' incorporates:
-    //   Constant: '<S136>/Constant'
-    //   DiscreteIntegrator: '<S134>/Discrete-Time Integrator'
-    //   RelationalOperator: '<S136>/Compare'
+    // Logic: '<S133>/AND' incorporates:
+    //   Constant: '<S135>/Constant'
+    //   DiscreteIntegrator: '<S133>/Discrete-Time Integrator'
+    //   RelationalOperator: '<S135>/Compare'
 
     rtb_AND = ((rtDW.DiscreteTimeIntegrator_DSTATE <= 4.0) &&
                rtDW.RateTransition5_Buffer);
 
-    // Logic: '<S135>/Logical Operator4' incorporates:
-    //   RelationalOperator: '<S131>/FixPt Relational Operator'
-    //   UnitDelay: '<S131>/Delay Input1'
-    //   UnitDelay: '<S135>/Unit Delay'
+    // Logic: '<S134>/Logical Operator4' incorporates:
+    //   RelationalOperator: '<S130>/FixPt Relational Operator'
+    //   UnitDelay: '<S130>/Delay Input1'
+    //   UnitDelay: '<S134>/Unit Delay'
     //
-    //  Block description for '<S131>/Delay Input1':
+    //  Block description for '<S130>/Delay Input1':
     //
     //   Store in Global RAM
 
     rtb_LogicalOperator4 = ((static_cast<int32_T>(rtb_AND) > static_cast<int32_T>
       (rtDW.DelayInput1_DSTATE)) || rtDW.UnitDelay_DSTATE);
 
-    // Outputs for Enabled SubSystem: '<S73>/Enabled Subsystem' incorporates:
-    //   EnablePort: '<S132>/Enable'
+    // Outputs for Enabled SubSystem: '<S72>/Enabled Subsystem' incorporates:
+    //   EnablePort: '<S131>/Enable'
 
     if (!rtb_LogicalOperator4) {
-      // SignalConversion generated from: '<S132>/Height'
+      // SignalConversion generated from: '<S131>/Height'
       rtDW.Height = rtb_RateTransition2;
     }
 
-    // End of Outputs for SubSystem: '<S73>/Enabled Subsystem'
+    // End of Outputs for SubSystem: '<S72>/Enabled Subsystem'
 
-    // Switch: '<S73>/Switch' incorporates:
-    //   Constant: '<S73>/Constant6'
-    //   Logic: '<S135>/Logical Operator3'
-    //   Switch: '<S135>/Switch'
+    // Switch: '<S72>/Switch' incorporates:
+    //   Constant: '<S72>/Constant6'
+    //   Logic: '<S134>/Logical Operator3'
+    //   Switch: '<S134>/Switch'
 
     if (rtb_AND) {
       u0 = platform_targets.hover.h_ref;
@@ -334,7 +332,7 @@ void PlatformController::step()
 
     // Gain: '<S4>/Gain5' incorporates:
     //   Sum: '<S4>/Sum2'
-    //   Switch: '<S73>/Switch'
+    //   Switch: '<S72>/Switch'
 
     rtb_Saturation1 = (u0 - rtb_RateTransition2) * platform_targets.hover.Kh;
 
@@ -350,7 +348,7 @@ void PlatformController::step()
     // Sum: '<S4>/Sum'
     rtb_Sum_l = rtb_Saturation1 - rtb_RateTransition3;
 
-    // DiscreteIntegrator: '<S111>/Integrator'
+    // DiscreteIntegrator: '<S110>/Integrator'
     if (rtb_NOT || (rtDW.Integrator_PrevResetState != 0)) {
       rtDW.Integrator_DSTATE = -9.81;
     }
@@ -369,25 +367,25 @@ void PlatformController::step()
 
     // End of Saturate: '<S4>/Saturation3'
 
-    // Sum: '<S121>/Sum' incorporates:
+    // Sum: '<S120>/Sum' incorporates:
     //   Constant: '<S4>/Constant3'
-    //   DiscreteIntegrator: '<S111>/Integrator'
-    //   Product: '<S116>/PProd Out'
-    //   UnaryMinus: '<S105>/Unary Minus'
+    //   DiscreteIntegrator: '<S110>/Integrator'
+    //   Product: '<S115>/PProd Out'
+    //   UnaryMinus: '<S104>/Unary Minus'
 
     rtb_Sum = (rtb_Sum_l * platform_targets.altitude.kP_hover +
                rtDW.Integrator_DSTATE) + rtb_Saturation3;
 
-    // Switch: '<S119>/Switch2' incorporates:
+    // Switch: '<S118>/Switch2' incorporates:
     //   Constant: '<S4>/Constant1'
-    //   RelationalOperator: '<S119>/LowerRelop1'
-    //   RelationalOperator: '<S119>/UpperRelop'
-    //   Switch: '<S119>/Switch'
+    //   RelationalOperator: '<S118>/LowerRelop1'
+    //   RelationalOperator: '<S118>/UpperRelop'
+    //   Switch: '<S118>/Switch'
 
     if (rtb_Sum > rtb_Diff) {
       rtb_Switch2 = rtb_Diff;
     } else if (rtb_Sum < -9.81) {
-      // Switch: '<S119>/Switch' incorporates:
+      // Switch: '<S118>/Switch' incorporates:
       //   Constant: '<S4>/Constant1'
 
       rtb_Switch2 = -9.81;
@@ -395,9 +393,9 @@ void PlatformController::step()
       rtb_Switch2 = rtb_Sum;
     }
 
-    // End of Switch: '<S119>/Switch2'
+    // End of Switch: '<S118>/Switch2'
 
-    // DiscreteIntegrator: '<S72>/Discrete-Time Integrator'
+    // DiscreteIntegrator: '<S71>/Discrete-Time Integrator'
     if ((rtDW.RateTransition5_Buffer && (rtDW.DiscreteTimeIntegrator_PrevRe_j <=
           0)) || (rtb_NOT && (rtDW.DiscreteTimeIntegrator_PrevRe_j == 1))) {
       rtDW.DiscreteTimeIntegrator_DSTATE_j = 0.0;
@@ -459,7 +457,7 @@ void PlatformController::step()
 
     rtb_Sum_cj = -rtb_Sum_cj - rtb_RateTransition3;
 
-    // DiscreteIntegrator: '<S50>/Integrator'
+    // DiscreteIntegrator: '<S49>/Integrator'
     if (rtb_NOT || (rtDW.Integrator_PrevResetState_n != 0)) {
       rtDW.Integrator_DSTATE_p = 0.0;
     }
@@ -484,25 +482,25 @@ void PlatformController::step()
     // Saturate: '<S3>/Saturation3'
     rtb_Sqrt = std::fmin(rtb_RateTransition4, platform_targets.a_dec);
 
-    // Sum: '<S60>/Sum' incorporates:
+    // Sum: '<S59>/Sum' incorporates:
     //   Constant: '<S3>/Constant3'
-    //   DiscreteIntegrator: '<S50>/Integrator'
-    //   Product: '<S55>/PProd Out'
-    //   UnaryMinus: '<S44>/Unary Minus'
+    //   DiscreteIntegrator: '<S49>/Integrator'
+    //   Product: '<S54>/PProd Out'
+    //   UnaryMinus: '<S43>/Unary Minus'
 
     rtb_Sum_dy = (rtb_Sum_cj * platform_targets.altitude.kP +
                   rtDW.Integrator_DSTATE_p) + rtb_Sqrt;
 
-    // Switch: '<S58>/Switch2' incorporates:
+    // Switch: '<S57>/Switch2' incorporates:
     //   Constant: '<S3>/Constant1'
-    //   RelationalOperator: '<S58>/LowerRelop1'
-    //   RelationalOperator: '<S58>/UpperRelop'
-    //   Switch: '<S58>/Switch'
+    //   RelationalOperator: '<S57>/LowerRelop1'
+    //   RelationalOperator: '<S57>/UpperRelop'
+    //   Switch: '<S57>/Switch'
 
     if (rtb_Sum_dy > rtb_Diff_j) {
       rtb_Switch2_j = rtb_Diff_j;
     } else if (rtb_Sum_dy < -9.81) {
-      // Switch: '<S58>/Switch' incorporates:
+      // Switch: '<S57>/Switch' incorporates:
       //   Constant: '<S3>/Constant1'
 
       rtb_Switch2_j = -9.81;
@@ -510,7 +508,7 @@ void PlatformController::step()
       rtb_Switch2_j = rtb_Sum_dy;
     }
 
-    // End of Switch: '<S58>/Switch2'
+    // End of Switch: '<S57>/Switch2'
 
     // MultiPortSwitch generated from: '<S2>/Multiport Switch' incorporates:
     //   Constant: '<S2>/Constant'
@@ -519,11 +517,11 @@ void PlatformController::step()
     switch (mission_mode) {
      case mission_modes::HOVER:
       // Switch: '<S4>/Switch' incorporates:
-      //   Constant: '<S130>/Constant'
+      //   Constant: '<S129>/Constant'
       //   Constant: '<S4>/Constant6'
-      //   DiscreteIntegrator: '<S72>/Discrete-Time Integrator'
-      //   Logic: '<S72>/AND'
-      //   RelationalOperator: '<S130>/Compare'
+      //   DiscreteIntegrator: '<S71>/Discrete-Time Integrator'
+      //   Logic: '<S71>/AND'
+      //   RelationalOperator: '<S129>/Compare'
 
       if ((rtDW.DiscreteTimeIntegrator_DSTATE_j <= 5.0) &&
           rtDW.RateTransition5_Buffer) {
@@ -532,22 +530,22 @@ void PlatformController::step()
 
         rtb_RateTransition4 = (rtb_Switch2 + 9.81) * rtb_Bias * rtb_MathFunction;
 
-        // Switch: '<S71>/Switch2' incorporates:
+        // Switch: '<S70>/Switch2' incorporates:
         //   Constant: '<S4>/Constant5'
-        //   RelationalOperator: '<S71>/LowerRelop1'
-        //   RelationalOperator: '<S71>/UpperRelop'
-        //   Switch: '<S71>/Switch'
+        //   RelationalOperator: '<S70>/LowerRelop1'
+        //   RelationalOperator: '<S70>/UpperRelop'
+        //   Switch: '<S70>/Switch'
 
         if (rtb_RateTransition4 > rtb_RateTransition) {
           rtb_RateTransition4 = rtb_RateTransition;
         } else if (rtb_RateTransition4 < 0.0) {
-          // Switch: '<S71>/Switch' incorporates:
+          // Switch: '<S70>/Switch' incorporates:
           //   Constant: '<S4>/Constant5'
 
           rtb_RateTransition4 = 0.0;
         }
 
-        // End of Switch: '<S71>/Switch2'
+        // End of Switch: '<S70>/Switch2'
       } else {
         rtb_RateTransition4 = 0.0;
       }
@@ -556,39 +554,28 @@ void PlatformController::step()
       break;
 
      case mission_modes::DROP:
-      // Switch: '<S3>/Switch1' incorporates:
-      //   Constant: '<S3>/Constant8'
-      //   Constant: '<S9>/Constant'
-      //   RelationalOperator: '<S9>/Compare'
+      // Product: '<S3>/Product1' incorporates:
+      //   Bias: '<S3>/Bias3'
 
-      if (rtb_RateTransition2 <= 0.25) {
-        rtb_RateTransition4 = 0.0;
-      } else {
-        // Product: '<S3>/Product1' incorporates:
-        //   Bias: '<S3>/Bias3'
+      rtb_RateTransition4 = (rtb_Switch2_j + 9.81) * rtb_Bias_e *
+        rtb_MathFunction_n;
 
-        rtb_RateTransition4 = (rtb_Switch2_j + 9.81) * rtb_Bias_e *
-          rtb_MathFunction_n;
+      // Switch: '<S11>/Switch2' incorporates:
+      //   Constant: '<S3>/Constant5'
+      //   RelationalOperator: '<S11>/LowerRelop1'
+      //   RelationalOperator: '<S11>/UpperRelop'
+      //   Switch: '<S11>/Switch'
 
-        // Switch: '<S12>/Switch2' incorporates:
+      if (rtb_RateTransition4 > rtb_RateTransition) {
+        rtb_RateTransition4 = rtb_RateTransition;
+      } else if (rtb_RateTransition4 < 0.0) {
+        // Switch: '<S11>/Switch' incorporates:
         //   Constant: '<S3>/Constant5'
-        //   RelationalOperator: '<S12>/LowerRelop1'
-        //   RelationalOperator: '<S12>/UpperRelop'
-        //   Switch: '<S12>/Switch'
 
-        if (rtb_RateTransition4 > rtb_RateTransition) {
-          rtb_RateTransition4 = rtb_RateTransition;
-        } else if (rtb_RateTransition4 < 0.0) {
-          // Switch: '<S12>/Switch' incorporates:
-          //   Constant: '<S3>/Constant5'
-
-          rtb_RateTransition4 = 0.0;
-        }
-
-        // End of Switch: '<S12>/Switch2'
+        rtb_RateTransition4 = 0.0;
       }
 
-      // End of Switch: '<S3>/Switch1'
+      // End of Switch: '<S11>/Switch2'
       break;
 
      default:
@@ -620,14 +607,14 @@ void PlatformController::step()
       rtDW.RateTransition1[2] = rtDW.RateTransition1_Buffer0[2];
     }
 
-    // Sum: '<S138>/Subtract3' incorporates:
+    // Sum: '<S137>/Subtract3' incorporates:
     //   Inport: '<Root>/gyro'
 
     rtb_error_idx_0 = rtDW.RateTransition1[0] - rtU.gyro[0];
     rtb_RateTransition4 = rtDW.RateTransition1[1] - rtU.gyro[1];
     rtb_RateTransition6_n_idx_0 = rtDW.RateTransition1[2] - rtU.gyro[2];
 
-    // DiscreteIntegrator: '<S175>/Integrator' incorporates:
+    // DiscreteIntegrator: '<S174>/Integrator' incorporates:
     //   Inport: '<Root>/Dropped'
 
     if (rtU.Dropped && (rtDW.Integrator_PrevResetState_m <= 0)) {
@@ -636,15 +623,15 @@ void PlatformController::step()
       rtDW.Integrator_DSTATE_f[2] = 0.0;
     }
 
-    // Sum: '<S184>/Sum' incorporates:
-    //   DiscreteIntegrator: '<S175>/Integrator'
-    //   Gain: '<S180>/Proportional Gain'
+    // Sum: '<S183>/Sum' incorporates:
+    //   DiscreteIntegrator: '<S174>/Integrator'
+    //   Gain: '<S179>/Proportional Gain'
 
     rtb_RateTransition6_n_idx_1 = platform_targets.attitude.Kp_rate *
       rtb_error_idx_0 + rtDW.Integrator_DSTATE_f[0];
     rtb_RateTransition2 = rtb_RateTransition6_n_idx_1;
 
-    // Saturate: '<S182>/Saturation'
+    // Saturate: '<S181>/Saturation'
     if (rtb_RateTransition6_n_idx_1 > 16.5) {
       rtb_Saturation_idx_0 = 16.5;
     } else if (rtb_RateTransition6_n_idx_1 < -16.5) {
@@ -653,15 +640,15 @@ void PlatformController::step()
       rtb_Saturation_idx_0 = rtb_RateTransition6_n_idx_1;
     }
 
-    // Sum: '<S184>/Sum' incorporates:
-    //   DiscreteIntegrator: '<S175>/Integrator'
-    //   Gain: '<S180>/Proportional Gain'
+    // Sum: '<S183>/Sum' incorporates:
+    //   DiscreteIntegrator: '<S174>/Integrator'
+    //   Gain: '<S179>/Proportional Gain'
 
     rtb_RateTransition6_n_idx_1 = platform_targets.attitude.Kp_rate *
       rtb_RateTransition4 + rtDW.Integrator_DSTATE_f[1];
     rtb_Sum_h_idx_1 = rtb_RateTransition6_n_idx_1;
 
-    // Saturate: '<S182>/Saturation'
+    // Saturate: '<S181>/Saturation'
     if (rtb_RateTransition6_n_idx_1 > 16.5) {
       rtb_Saturation_idx_1 = 16.5;
     } else if (rtb_RateTransition6_n_idx_1 < -16.5) {
@@ -670,9 +657,9 @@ void PlatformController::step()
       rtb_Saturation_idx_1 = rtb_RateTransition6_n_idx_1;
     }
 
-    // Sum: '<S184>/Sum' incorporates:
-    //   DiscreteIntegrator: '<S175>/Integrator'
-    //   Gain: '<S180>/Proportional Gain'
+    // Sum: '<S183>/Sum' incorporates:
+    //   DiscreteIntegrator: '<S174>/Integrator'
+    //   Gain: '<S179>/Proportional Gain'
 
     rtb_RateTransition6_n_idx_1 = platform_targets.attitude.Kp_rate *
       rtb_RateTransition6_n_idx_0 + rtDW.Integrator_DSTATE_f[2];
@@ -686,24 +673,24 @@ void PlatformController::step()
     }
 
     // Switch: '<S2>/Switch' incorporates:
-    //   Constant: '<S193>/Constant'
+    //   Constant: '<S192>/Constant'
     //   DiscreteIntegrator: '<S6>/Discrete-Time Integrator'
     //   Inport: '<Root>/Dropped'
     //   Logic: '<S6>/AND'
-    //   RelationalOperator: '<S193>/Compare'
+    //   RelationalOperator: '<S192>/Compare'
 
     if ((rtDW.DiscreteTimeIntegrator_DSTATE_f <= 5.0) && rtU.Dropped) {
-      // Gain: '<S138>/Gain4' incorporates:
-      //   Gain: '<S138>/Gain5'
+      // Gain: '<S137>/Gain4' incorporates:
+      //   Gain: '<S137>/Gain5'
 
       rtb_RateTransition3 = 1.0 / (2.0 * platform_targets.attitude.r);
       rtb_RateTransition = rtb_RateTransition3 * rtb_Saturation_idx_0;
 
-      // Gain: '<S138>/Gain5'
+      // Gain: '<S137>/Gain5'
       rtb_RateTransition3 *= rtb_Saturation_idx_1;
 
-      // Saturate: '<S138>/Saturation1' incorporates:
-      //   UnaryMinus: '<S138>/Unary Minus'
+      // Saturate: '<S137>/Saturation1' incorporates:
+      //   UnaryMinus: '<S137>/Unary Minus'
 
       if (-rtb_RateTransition > 272.0) {
         u0 = 272.0;
@@ -714,12 +701,12 @@ void PlatformController::step()
       }
 
       // Outport: '<Root>/Fy_neg' incorporates:
-      //   Saturate: '<S138>/Saturation1'
+      //   Saturate: '<S137>/Saturation1'
       //   Sum: '<S2>/Sum'
 
       rtY.Fy_neg = rtDW.Gain + u0;
 
-      // Saturate: '<S138>/Saturation'
+      // Saturate: '<S137>/Saturation'
       if (rtb_RateTransition > 272.0) {
         rtb_RateTransition = 272.0;
       } else if (rtb_RateTransition < -272.0) {
@@ -727,13 +714,13 @@ void PlatformController::step()
       }
 
       // Outport: '<Root>/Fy_pos' incorporates:
-      //   Saturate: '<S138>/Saturation'
+      //   Saturate: '<S137>/Saturation'
       //   Sum: '<S2>/Sum1'
 
       rtY.Fy_pos = rtDW.Gain + rtb_RateTransition;
 
-      // Saturate: '<S138>/Saturation3' incorporates:
-      //   UnaryMinus: '<S138>/Unary Minus1'
+      // Saturate: '<S137>/Saturation3' incorporates:
+      //   UnaryMinus: '<S137>/Unary Minus1'
 
       if (-rtb_RateTransition3 > 272.0) {
         u0 = 272.0;
@@ -744,12 +731,12 @@ void PlatformController::step()
       }
 
       // Outport: '<Root>/Fx_pos' incorporates:
-      //   Saturate: '<S138>/Saturation3'
+      //   Saturate: '<S137>/Saturation3'
       //   Sum: '<S2>/Sum2'
 
       rtY.Fx_pos = rtDW.Gain + u0;
 
-      // Saturate: '<S138>/Saturation2'
+      // Saturate: '<S137>/Saturation2'
       if (rtb_RateTransition3 > 272.0) {
         rtb_RateTransition3 = 272.0;
       } else if (rtb_RateTransition3 < -272.0) {
@@ -757,7 +744,7 @@ void PlatformController::step()
       }
 
       // Outport: '<Root>/Fx_neg' incorporates:
-      //   Saturate: '<S138>/Saturation2'
+      //   Saturate: '<S137>/Saturation2'
       //   Sum: '<S2>/Sum3'
 
       rtY.Fx_neg = rtDW.Gain + rtb_RateTransition3;
@@ -785,14 +772,14 @@ void PlatformController::step()
 
     // End of Switch: '<S2>/Switch'
 
-    // Gain: '<S167>/Kb'
+    // Gain: '<S166>/Kb'
     rtb_RateTransition = platform_targets.attitude.Ki_rate /
       platform_targets.attitude.Kp_rate;
 
-    // Sum: '<S167>/SumI4' incorporates:
-    //   Gain: '<S167>/Kb'
-    //   Gain: '<S172>/Integral Gain'
-    //   Sum: '<S167>/SumI2'
+    // Sum: '<S166>/SumI4' incorporates:
+    //   Gain: '<S166>/Kb'
+    //   Gain: '<S171>/Integral Gain'
+    //   Sum: '<S166>/SumI2'
 
     rtb_Saturation_idx_0 = (rtb_Saturation_idx_0 - rtb_RateTransition2) *
       rtb_RateTransition + platform_targets.attitude.Ki_rate * rtb_error_idx_0;
@@ -800,7 +787,7 @@ void PlatformController::step()
       rtb_RateTransition + platform_targets.attitude.Ki_rate *
       rtb_RateTransition4;
 
-    // Saturate: '<S182>/Saturation'
+    // Saturate: '<S181>/Saturation'
     if (rtb_RateTransition6_n_idx_1 > 16.5) {
       u0 = 16.5;
     } else if (rtb_RateTransition6_n_idx_1 < -16.5) {
@@ -809,12 +796,12 @@ void PlatformController::step()
       u0 = rtb_RateTransition6_n_idx_1;
     }
 
-    // Sum: '<S167>/SumI4' incorporates:
-    //   Gain: '<S167>/Kb'
-    //   Gain: '<S172>/Integral Gain'
-    //   Saturate: '<S182>/Saturation'
-    //   Sum: '<S167>/SumI2'
-    //   Sum: '<S184>/Sum'
+    // Sum: '<S166>/SumI4' incorporates:
+    //   Gain: '<S166>/Kb'
+    //   Gain: '<S171>/Integral Gain'
+    //   Saturate: '<S181>/Saturation'
+    //   Sum: '<S166>/SumI2'
+    //   Sum: '<S183>/Sum'
 
     rtb_error_idx_0 = (u0 - rtb_RateTransition6_n_idx_1) * rtb_RateTransition +
       platform_targets.attitude.Ki_rate * rtb_RateTransition6_n_idx_0;
@@ -832,24 +819,24 @@ void PlatformController::step()
 
   // RateTransition: '<S2>/Rate Transition1'
   if (tmp_0) {
-    // Sum: '<S63>/SumI1' incorporates:
+    // Sum: '<S62>/SumI1' incorporates:
     //   Bias: '<S3>/Bias6'
     //   Constant: '<S3>/Constant4'
     //   Product: '<S3>/Product3'
-    //   Product: '<S47>/IProd Out'
-    //   Sum: '<S62>/SumI3'
+    //   Product: '<S46>/IProd Out'
+    //   Sum: '<S61>/SumI3'
 
     rtb_RateTransition4 = ((rtDW.RateTransition1_Buffer / rtb_Bias_e /
       rtb_MathFunction_n - 9.81) - rtb_Switch2_j) + rtb_Sum_cj *
       platform_targets.altitude.kI;
 
-    // Switch: '<S42>/Switch' incorporates:
-    //   RelationalOperator: '<S42>/u_GTE_up'
+    // Switch: '<S41>/Switch' incorporates:
+    //   RelationalOperator: '<S41>/u_GTE_up'
 
     if (rtb_Sum_dy < rtb_Diff_j) {
-      // Switch: '<S42>/Switch1' incorporates:
+      // Switch: '<S41>/Switch1' incorporates:
       //   Constant: '<S3>/Constant1'
-      //   RelationalOperator: '<S42>/u_GT_lo'
+      //   RelationalOperator: '<S41>/u_GT_lo'
 
       if (rtb_Sum_dy > -9.81) {
         rtb_Diff_j = rtb_Sum_dy;
@@ -857,19 +844,19 @@ void PlatformController::step()
         rtb_Diff_j = -9.81;
       }
 
-      // End of Switch: '<S42>/Switch1'
+      // End of Switch: '<S41>/Switch1'
     }
 
-    // End of Switch: '<S42>/Switch'
+    // End of Switch: '<S41>/Switch'
 
-    // Sum: '<S42>/Diff'
+    // Sum: '<S41>/Diff'
     rtb_Diff_j = rtb_Sum_dy - rtb_Diff_j;
 
-    // Switch: '<S39>/Switch1' incorporates:
-    //   Constant: '<S39>/Clamping_zero'
-    //   Constant: '<S39>/Constant'
-    //   Constant: '<S39>/Constant2'
-    //   RelationalOperator: '<S39>/fix for DT propagation issue'
+    // Switch: '<S38>/Switch1' incorporates:
+    //   Constant: '<S38>/Clamping_zero'
+    //   Constant: '<S38>/Constant'
+    //   Constant: '<S38>/Constant2'
+    //   RelationalOperator: '<S38>/fix for DT propagation issue'
 
     if (rtb_Diff_j > 0.0) {
       tmp_1 = 1;
@@ -877,11 +864,11 @@ void PlatformController::step()
       tmp_1 = -1;
     }
 
-    // Switch: '<S39>/Switch2' incorporates:
-    //   Constant: '<S39>/Clamping_zero'
-    //   Constant: '<S39>/Constant3'
-    //   Constant: '<S39>/Constant4'
-    //   RelationalOperator: '<S39>/fix for DT propagation issue1'
+    // Switch: '<S38>/Switch2' incorporates:
+    //   Constant: '<S38>/Clamping_zero'
+    //   Constant: '<S38>/Constant3'
+    //   Constant: '<S38>/Constant4'
+    //   RelationalOperator: '<S38>/fix for DT propagation issue1'
 
     if (rtb_RateTransition4 > 0.0) {
       tmp_2 = 1;
@@ -889,14 +876,14 @@ void PlatformController::step()
       tmp_2 = -1;
     }
 
-    // Switch: '<S39>/Switch' incorporates:
-    //   Constant: '<S39>/Clamping_zero'
-    //   Constant: '<S39>/Constant1'
-    //   Logic: '<S39>/AND3'
-    //   RelationalOperator: '<S39>/Equal1'
-    //   RelationalOperator: '<S39>/Relational Operator'
-    //   Switch: '<S39>/Switch1'
-    //   Switch: '<S39>/Switch2'
+    // Switch: '<S38>/Switch' incorporates:
+    //   Constant: '<S38>/Clamping_zero'
+    //   Constant: '<S38>/Constant1'
+    //   Logic: '<S38>/AND3'
+    //   RelationalOperator: '<S38>/Equal1'
+    //   RelationalOperator: '<S38>/Relational Operator'
+    //   Switch: '<S38>/Switch1'
+    //   Switch: '<S38>/Switch2'
 
     if ((rtb_Diff_j != 0.0) && (tmp_1 == tmp_2)) {
       rtb_Switch = 0.0;
@@ -904,26 +891,26 @@ void PlatformController::step()
       rtb_Switch = rtb_RateTransition4;
     }
 
-    // End of Switch: '<S39>/Switch'
+    // End of Switch: '<S38>/Switch'
 
-    // Sum: '<S124>/SumI1' incorporates:
+    // Sum: '<S123>/SumI1' incorporates:
     //   Bias: '<S4>/Bias6'
     //   Constant: '<S4>/Constant4'
-    //   Product: '<S108>/IProd Out'
+    //   Product: '<S107>/IProd Out'
     //   Product: '<S4>/Product3'
-    //   Sum: '<S123>/SumI3'
+    //   Sum: '<S122>/SumI3'
 
     rtb_RateTransition4 = ((rtDW.RateTransition1_Buffer / rtb_Bias /
       rtb_MathFunction - 9.81) - rtb_Switch2) +
       platform_targets.altitude.kI_hover * 2.0 * rtb_Sum_l;
 
-    // Switch: '<S103>/Switch' incorporates:
-    //   RelationalOperator: '<S103>/u_GTE_up'
+    // Switch: '<S102>/Switch' incorporates:
+    //   RelationalOperator: '<S102>/u_GTE_up'
 
     if (rtb_Sum < rtb_Diff) {
-      // Switch: '<S103>/Switch1' incorporates:
+      // Switch: '<S102>/Switch1' incorporates:
       //   Constant: '<S4>/Constant1'
-      //   RelationalOperator: '<S103>/u_GT_lo'
+      //   RelationalOperator: '<S102>/u_GT_lo'
 
       if (rtb_Sum > -9.81) {
         rtb_Diff = rtb_Sum;
@@ -931,19 +918,19 @@ void PlatformController::step()
         rtb_Diff = -9.81;
       }
 
-      // End of Switch: '<S103>/Switch1'
+      // End of Switch: '<S102>/Switch1'
     }
 
-    // End of Switch: '<S103>/Switch'
+    // End of Switch: '<S102>/Switch'
 
-    // Sum: '<S103>/Diff'
+    // Sum: '<S102>/Diff'
     rtb_Diff = rtb_Sum - rtb_Diff;
 
-    // Switch: '<S100>/Switch1' incorporates:
-    //   Constant: '<S100>/Clamping_zero'
-    //   Constant: '<S100>/Constant'
-    //   Constant: '<S100>/Constant2'
-    //   RelationalOperator: '<S100>/fix for DT propagation issue'
+    // Switch: '<S99>/Switch1' incorporates:
+    //   Constant: '<S99>/Clamping_zero'
+    //   Constant: '<S99>/Constant'
+    //   Constant: '<S99>/Constant2'
+    //   RelationalOperator: '<S99>/fix for DT propagation issue'
 
     if (rtb_Diff > 0.0) {
       tmp_1 = 1;
@@ -951,11 +938,11 @@ void PlatformController::step()
       tmp_1 = -1;
     }
 
-    // Switch: '<S100>/Switch2' incorporates:
-    //   Constant: '<S100>/Clamping_zero'
-    //   Constant: '<S100>/Constant3'
-    //   Constant: '<S100>/Constant4'
-    //   RelationalOperator: '<S100>/fix for DT propagation issue1'
+    // Switch: '<S99>/Switch2' incorporates:
+    //   Constant: '<S99>/Clamping_zero'
+    //   Constant: '<S99>/Constant3'
+    //   Constant: '<S99>/Constant4'
+    //   RelationalOperator: '<S99>/fix for DT propagation issue1'
 
     if (rtb_RateTransition4 > 0.0) {
       tmp_2 = 1;
@@ -963,14 +950,14 @@ void PlatformController::step()
       tmp_2 = -1;
     }
 
-    // Switch: '<S100>/Switch' incorporates:
-    //   Constant: '<S100>/Clamping_zero'
-    //   Constant: '<S100>/Constant1'
-    //   Logic: '<S100>/AND3'
-    //   RelationalOperator: '<S100>/Equal1'
-    //   RelationalOperator: '<S100>/Relational Operator'
-    //   Switch: '<S100>/Switch1'
-    //   Switch: '<S100>/Switch2'
+    // Switch: '<S99>/Switch' incorporates:
+    //   Constant: '<S99>/Clamping_zero'
+    //   Constant: '<S99>/Constant1'
+    //   Logic: '<S99>/AND3'
+    //   RelationalOperator: '<S99>/Equal1'
+    //   RelationalOperator: '<S99>/Relational Operator'
+    //   Switch: '<S99>/Switch1'
+    //   Switch: '<S99>/Switch2'
 
     if ((rtb_Diff != 0.0) && (tmp_1 == tmp_2)) {
       rtb_Switch_c = 0.0;
@@ -978,7 +965,7 @@ void PlatformController::step()
       rtb_Switch_c = rtb_RateTransition4;
     }
 
-    // End of Switch: '<S100>/Switch'
+    // End of Switch: '<S99>/Switch'
 
     // MultiPortSwitch generated from: '<S2>/Multiport Switch' incorporates:
     //   Constant: '<S2>/Constant'
@@ -1039,26 +1026,26 @@ void PlatformController::step()
   //   RateTransition: '<S5>/Rate Transition1'
 
   if ((&rtM)->Timing.TaskCounters.TID[2] == 0) {
-    // Gain: '<S137>/Gain3' incorporates:
+    // Gain: '<S136>/Gain3' incorporates:
     //   Inport: '<Root>/quaternion_bias'
-    //   Sum: '<S137>/Sum'
-    //   UnaryMinus: '<S137>/Unary Minus'
+    //   Sum: '<S136>/Sum'
+    //   UnaryMinus: '<S136>/Unary Minus'
 
     rtb_RateTransition = -(rtDW.RateTransition6_Buffer_h[0] -
       rtU.quaternion_bias[0]) * platform_targets.attitude.Kp_att;
 
-    // Switch: '<S139>/Switch2' incorporates:
-    //   Constant: '<S137>/Constant'
-    //   Constant: '<S137>/Constant1'
-    //   RelationalOperator: '<S139>/LowerRelop1'
-    //   RelationalOperator: '<S139>/UpperRelop'
-    //   Switch: '<S139>/Switch'
+    // Switch: '<S138>/Switch2' incorporates:
+    //   Constant: '<S136>/Constant'
+    //   Constant: '<S136>/Constant1'
+    //   RelationalOperator: '<S138>/LowerRelop1'
+    //   RelationalOperator: '<S138>/UpperRelop'
+    //   Switch: '<S138>/Switch'
 
     if (rtb_RateTransition > 0.52) {
       rtb_RateTransition = 0.52;
     } else if (rtb_RateTransition < -0.52) {
-      // Switch: '<S139>/Switch' incorporates:
-      //   Constant: '<S137>/Constant1'
+      // Switch: '<S138>/Switch' incorporates:
+      //   Constant: '<S136>/Constant1'
 
       rtb_RateTransition = -0.52;
     }
@@ -1068,26 +1055,26 @@ void PlatformController::step()
     // Outport: '<Root>/omega_demand'
     rtY.omega_demand[0] = rtb_RateTransition;
 
-    // Gain: '<S137>/Gain3' incorporates:
+    // Gain: '<S136>/Gain3' incorporates:
     //   Inport: '<Root>/quaternion_bias'
-    //   Sum: '<S137>/Sum'
-    //   UnaryMinus: '<S137>/Unary Minus'
+    //   Sum: '<S136>/Sum'
+    //   UnaryMinus: '<S136>/Unary Minus'
 
     rtb_RateTransition = -(rtDW.RateTransition6_Buffer_h[1] -
       rtU.quaternion_bias[1]) * platform_targets.attitude.Kp_att;
 
-    // Switch: '<S139>/Switch2' incorporates:
-    //   Constant: '<S137>/Constant'
-    //   Constant: '<S137>/Constant1'
-    //   RelationalOperator: '<S139>/LowerRelop1'
-    //   RelationalOperator: '<S139>/UpperRelop'
-    //   Switch: '<S139>/Switch'
+    // Switch: '<S138>/Switch2' incorporates:
+    //   Constant: '<S136>/Constant'
+    //   Constant: '<S136>/Constant1'
+    //   RelationalOperator: '<S138>/LowerRelop1'
+    //   RelationalOperator: '<S138>/UpperRelop'
+    //   Switch: '<S138>/Switch'
 
     if (rtb_RateTransition > 0.52) {
       rtb_RateTransition = 0.52;
     } else if (rtb_RateTransition < -0.52) {
-      // Switch: '<S139>/Switch' incorporates:
-      //   Constant: '<S137>/Constant1'
+      // Switch: '<S138>/Switch' incorporates:
+      //   Constant: '<S136>/Constant1'
 
       rtb_RateTransition = -0.52;
     }
@@ -1097,26 +1084,26 @@ void PlatformController::step()
     // Outport: '<Root>/omega_demand'
     rtY.omega_demand[1] = rtb_RateTransition;
 
-    // Gain: '<S137>/Gain3' incorporates:
+    // Gain: '<S136>/Gain3' incorporates:
     //   Inport: '<Root>/quaternion_bias'
-    //   Sum: '<S137>/Sum'
-    //   UnaryMinus: '<S137>/Unary Minus'
+    //   Sum: '<S136>/Sum'
+    //   UnaryMinus: '<S136>/Unary Minus'
 
     rtb_RateTransition = -(rtDW.RateTransition6_Buffer_h[2] -
       rtU.quaternion_bias[2]) * platform_targets.attitude.Kp_att;
 
-    // Switch: '<S139>/Switch2' incorporates:
-    //   Constant: '<S137>/Constant'
-    //   Constant: '<S137>/Constant1'
-    //   RelationalOperator: '<S139>/LowerRelop1'
-    //   RelationalOperator: '<S139>/UpperRelop'
-    //   Switch: '<S139>/Switch'
+    // Switch: '<S138>/Switch2' incorporates:
+    //   Constant: '<S136>/Constant'
+    //   Constant: '<S136>/Constant1'
+    //   RelationalOperator: '<S138>/LowerRelop1'
+    //   RelationalOperator: '<S138>/UpperRelop'
+    //   Switch: '<S138>/Switch'
 
     if (rtb_RateTransition > 0.52) {
       rtb_RateTransition = 0.52;
     } else if (rtb_RateTransition < -0.52) {
-      // Switch: '<S139>/Switch' incorporates:
-      //   Constant: '<S137>/Constant1'
+      // Switch: '<S138>/Switch' incorporates:
+      //   Constant: '<S136>/Constant1'
 
       rtb_RateTransition = -0.52;
     }
@@ -1129,25 +1116,25 @@ void PlatformController::step()
   }
 
   if (tmp_0) {
-    // Update for DiscreteIntegrator: '<S134>/Discrete-Time Integrator' incorporates:
-    //   Constant: '<S134>/Constant'
+    // Update for DiscreteIntegrator: '<S133>/Discrete-Time Integrator' incorporates:
+    //   Constant: '<S133>/Constant'
 
     rtDW.DiscreteTimeIntegrator_DSTATE += 0.02;
     rtDW.DiscreteTimeIntegrator_PrevRese = static_cast<int8_T>
       (rtb_RateTransition5);
 
-    // Update for UnitDelay: '<S131>/Delay Input1'
+    // Update for UnitDelay: '<S130>/Delay Input1'
     //
-    //  Block description for '<S131>/Delay Input1':
+    //  Block description for '<S130>/Delay Input1':
     //
     //   Store in Global RAM
 
     rtDW.DelayInput1_DSTATE = rtb_AND;
 
-    // Update for UnitDelay: '<S135>/Unit Delay'
+    // Update for UnitDelay: '<S134>/Unit Delay'
     rtDW.UnitDelay_DSTATE = rtb_LogicalOperator4;
 
-    // Update for DiscreteIntegrator: '<S111>/Integrator'
+    // Update for DiscreteIntegrator: '<S110>/Integrator'
     rtDW.Integrator_DSTATE += 0.02 * rtb_Switch_c;
     if (rtDW.Integrator_DSTATE > 3.0) {
       rtDW.Integrator_DSTATE = 3.0;
@@ -1157,17 +1144,17 @@ void PlatformController::step()
 
     rtDW.Integrator_PrevResetState = static_cast<int8_T>(rtb_NOT);
 
-    // End of Update for DiscreteIntegrator: '<S111>/Integrator'
+    // End of Update for DiscreteIntegrator: '<S110>/Integrator'
 
-    // Update for DiscreteIntegrator: '<S72>/Discrete-Time Integrator' incorporates:
-    //   Constant: '<S72>/Constant'
-    //   DiscreteIntegrator: '<S134>/Discrete-Time Integrator'
+    // Update for DiscreteIntegrator: '<S71>/Discrete-Time Integrator' incorporates:
+    //   Constant: '<S71>/Constant'
+    //   DiscreteIntegrator: '<S133>/Discrete-Time Integrator'
 
     rtDW.DiscreteTimeIntegrator_DSTATE_j += 0.02;
     rtDW.DiscreteTimeIntegrator_PrevRe_j = static_cast<int8_T>
       (rtb_RateTransition5);
 
-    // Update for DiscreteIntegrator: '<S50>/Integrator'
+    // Update for DiscreteIntegrator: '<S49>/Integrator'
     rtDW.Integrator_DSTATE_p += 0.02 * rtb_Switch;
     if (rtDW.Integrator_DSTATE_p > 3.0) {
       rtDW.Integrator_DSTATE_p = 3.0;
@@ -1177,11 +1164,11 @@ void PlatformController::step()
 
     rtDW.Integrator_PrevResetState_n = static_cast<int8_T>(rtb_NOT);
 
-    // End of Update for DiscreteIntegrator: '<S50>/Integrator'
+    // End of Update for DiscreteIntegrator: '<S49>/Integrator'
   }
 
   if (tmp) {
-    // Update for DiscreteIntegrator: '<S175>/Integrator' incorporates:
+    // Update for DiscreteIntegrator: '<S174>/Integrator' incorporates:
     //   Inport: '<Root>/Dropped'
 
     rtb_RateTransition = 0.005 * rtb_Saturation_idx_0 +
@@ -1214,7 +1201,7 @@ void PlatformController::step()
 
     // Update for DiscreteIntegrator: '<S6>/Discrete-Time Integrator' incorporates:
     //   Constant: '<S6>/Constant'
-    //   DiscreteIntegrator: '<S175>/Integrator'
+    //   DiscreteIntegrator: '<S174>/Integrator'
     //   Inport: '<Root>/Dropped'
 
     rtDW.DiscreteTimeIntegrator_DSTATE_f += 0.005;
@@ -1227,16 +1214,16 @@ void PlatformController::step()
 // Model initialize function
 void PlatformController::initialize()
 {
-  // InitializeConditions for DiscreteIntegrator: '<S134>/Discrete-Time Integrator' 
+  // InitializeConditions for DiscreteIntegrator: '<S133>/Discrete-Time Integrator' 
   rtDW.DiscreteTimeIntegrator_PrevRese = 2;
 
-  // InitializeConditions for DiscreteIntegrator: '<S111>/Integrator'
+  // InitializeConditions for DiscreteIntegrator: '<S110>/Integrator'
   rtDW.Integrator_DSTATE = -9.81;
 
-  // InitializeConditions for DiscreteIntegrator: '<S72>/Discrete-Time Integrator' 
+  // InitializeConditions for DiscreteIntegrator: '<S71>/Discrete-Time Integrator' 
   rtDW.DiscreteTimeIntegrator_PrevRe_j = 2;
 
-  // InitializeConditions for DiscreteIntegrator: '<S175>/Integrator'
+  // InitializeConditions for DiscreteIntegrator: '<S174>/Integrator'
   rtDW.Integrator_PrevResetState_m = 2;
 
   // InitializeConditions for DiscreteIntegrator: '<S6>/Discrete-Time Integrator' 

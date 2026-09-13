@@ -22,7 +22,7 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-# filename = "log0386.bin"
+filename = "tlm_20260906_193739.bin"
 myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -34,7 +34,7 @@ myLog = log_processor(filename=filename)
 
 
 
-print(myLog.valveVelocity)
+# print(myLog.valveVelocity)
 
 fig,ax= plt.subplots(2,sharex=True)
 fig.canvas.manager.set_window_title(filename) 

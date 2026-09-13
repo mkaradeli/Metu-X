@@ -23,7 +23,7 @@ if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
 # filename = "log2010.bin"
-filename = "log2323.bin"
+filename = "LOG2407.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -142,6 +142,10 @@ plt.grid(1)
 
 plt.figure("lidar_height")
 plt.plot(myLog.df.timestamp,myLog.df.lidar_height)
+plt.grid(1)
+
+plt.figure("battery_voltage")
+plt.plot(myLog.df.timestamp, myLog.df.battery_voltage)
 plt.grid(1)
 plt.show()
 print(f"logging period std= {np.std(1e6*np.diff(myLog.df.timestamp)):.3} us")

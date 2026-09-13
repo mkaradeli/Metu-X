@@ -23,7 +23,8 @@ if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
 filename = "LOG2114.BIN"
-filename = "LOG2116.BIN"
+# filename = "LOG2116.BIN"
+# filename = "tlm_20260913_182610.bin"
 
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
