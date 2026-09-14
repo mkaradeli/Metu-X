@@ -33,7 +33,7 @@ Fs_max_ = 0.0054517494481315263;     % Yeni Statik Sürtünme (Coulomb)
 % Bu, Ki integral kazancını artırarak motorun takılmasını önler.
 
 
-SatMax = 15;
+SatMax = 25;
 SatMin = -15;
 Ts = 1/1000;
 RateLimiterMax = 2e15;

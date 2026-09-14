@@ -27,6 +27,12 @@ filename = "LOG2114.BIN"
 # filename = "tlm_20260913_182610.bin"
 filename = "tlm_20260913_223900.bin"
 filename = "tlm_20260914_001055.bin"
+filename = "tlm_20260914_220952.bin" # pazartesi pozisyon koruma test
+filename = "tlm_20260914_172045.bin" # pazartesi 2. drop testi
+filename = "tlm_20260914_233025.bin" # pazartesi aksam HWIL
+filename = "tlm_20260914_235306.bin" # pazartesi aksam HWIL 2, 7m
+filename = "tlm_20260915_003836.bin" # pazartesi aksam HWIL 3, 7m, attitude 50N< kapali
+# filename = "tlm_20260914_175642.bin" # pazartesi 2. drop sonrasi safe discharge
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -70,6 +76,8 @@ for i in range(4):
 	ax[1][i].set_title(f'Valve Position {i}')
 	ax[1][i].plot(myLog.df.timestamp, myLog.df[f"pos_ref_{i}"], label="Position Referance")
 	ax[1][i].plot(myLog.df.timestamp, myLog.df[f"valveAngle_{i}"], label="Position Feedback")
+	ax[1][i].plot(myLog.df.timestamp, myLog.df[f"pos_ref_rate_limited_{i}"], label="rate limited")
+	# pos_ref_rate_limited
 	# ax[1][i].set_ylim(-100,2000)
 
 	ax[1][i].set_ylabel("Valve Angle [deg]")
@@ -354,6 +362,13 @@ plt.ylabel("entry period [ms]")
 plt.xlabel("entry id")
 plt.grid(1)
 
+
+plt.figure()
+plt.plot(myLog.df.timestamp, myLog.df.battery_voltage)
+plt.grid(1)
+plt.xlabel("time")
+plt.ylabel("voltage")
+plt.show()
 
 #plt.show()
 print(f"logging period std= {np.std(1e6*np.diff(myLog.df.timestamp)):.3} us")

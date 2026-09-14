@@ -1693,7 +1693,7 @@ class  log_processor():
 				print('struct format is wrong.')
 				print(f'log struct size = {self.struct_size}, calculated struct size = {struct.calcsize(self.struct_format)}')
 				exit()
-
+			print(self.struct_size)
 			self.columns = ["timestamp"]
 			for i in range(N_ACT):
 				self.columns += [f"{f}_{i}" for f in ACT_FIELDS]
