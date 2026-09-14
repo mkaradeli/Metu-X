@@ -22,11 +22,8 @@ for _ in dirlist:
 if len(sys.argv) == 2:
 	filename = sys.argv[1]
 print(filename)
-filename = "LOG2114.BIN"
+filename = "tlm_20260914_113838.bin"
 # filename = "LOG2116.BIN"
-# filename = "tlm_20260913_182610.bin"
-filename = "tlm_20260913_223900.bin"
-filename = "tlm_20260914_001055.bin"
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])

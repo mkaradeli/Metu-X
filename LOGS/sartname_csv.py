@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 
 # Yeni log csv'sini sartname Tablo 1 formatina cevirir; kayit hizi oldugu gibi korunur
 TEAM_NAME = "Metu-X"
-PHASE     = "Deneme"      # "Deneme" ya da "Yarisma"
+PHASE     = "Yarisma"      # "Deneme" ya da "Yarisma"
 SHOT_NO   = 1
-LOG_FILE  = "tlm_20260912_194131.csv" # bos birakilirsa komut satirindan alinir
+LOG_FILE  = "tlm_20260914_113838.csv" # bos birakilirsa komut satirindan alinir
+
+SEP, DECIMAL = ";", ","    # Turkce Excel: sutun ayirici ';', ondalik ',' (sartname ornegi de boyle)
 
 filename = LOG_FILE or sys.argv[1]
 df = pd.read_csv(filename)
@@ -61,7 +63,7 @@ out = pd.DataFrame({
 
 # Windows dosya adinda ':' ve '/' olamadigi icin "Takim Adi-Deneme-Atis no 001.csv"
 outpath = os.path.join(os.path.dirname(os.path.abspath(filename)), f"{TEAM_NAME}-{PHASE}-Atis no {SHOT_NO:03d}.csv")
-out.to_csv(outpath, index=False, encoding="utf-8-sig")
+out.to_csv(outpath, sep=SEP, decimal=DECIMAL, index=False, encoding="utf-8-sig")
 print(f"{len(out)} satir -> {outpath}")
 
 fig, axes = plt.subplots(len(out.columns) - 1, 1, sharex=True, figsize=(10, 9))
