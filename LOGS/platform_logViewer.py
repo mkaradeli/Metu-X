@@ -24,6 +24,20 @@ if len(sys.argv) == 2:
 print(filename)
 filename = "tlm_20260914_113838.bin"
 # filename = "LOG2116.BIN"
+# filename = "tlm_20260913_182610.bin"
+filename = "tlm_20260913_223900.bin"
+filename = "tlm_20260914_001055.bin"
+filename = "tlm_20260914_220952.bin" # pazartesi pozisyon koruma test
+filename = "tlm_20260914_172045.bin" # pazartesi 2. drop testi
+filename = "tlm_20260914_233025.bin" # pazartesi aksam HWIL
+filename = "tlm_20260914_235306.bin" # pazartesi aksam HWIL 2, 7m
+filename = "tlm_20260915_003836.bin" # pazartesi aksam HWIL 3, 7m, attitude 50N< kapali
+filename = "tlm_20260915_105112.bin" # salı günü ilk test
+filename = 'tlm_20260915_162440.bin' # salı günü ikinci test broooo
+filename = "LOG2053.BIN" # vana acmayan 5m, sd 
+filename = "tlm_20260915_214715.bin" # vana acmayan 5m, telemetry
+filename = "tlm_20260915_220426.bin"
+# filename = "tlm_20260914_175642.bin" # pazartesi 2. drop sonrasi safe discharge
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
 # test = pd.DataFrame([])
@@ -110,7 +124,9 @@ for i in range(4):
 	ax3[0].plot(myLog.df.timestamp, myLog.df[f"nozzle_pressure_{i}"], label=f"Nozzle Pressure {i}")
 	ax3[0].plot(myLog.df.timestamp, myLog.df[f"pressure_demand_{i}"], label=f"Nozzle Demand {i}")
 
-	ax3[1].plot(myLog.df.timestamp, myLog.df[f"valveAngle_{i}"], label=f"Position Feedback {i}")
+	ax3[1].plot(myLog.df.timestamp, myLog.df[f"valveAngle_{i}"], label=f"Position Feedback {i}", color = f"C{i}")
+	ax3[1].plot(myLog.df.timestamp, myLog.df[f"pos_ref_{i}"],':', label=f"Referance {i}", color = f"C{i}")
+
 	ax3[2].plot(myLog.df.timestamp, myLog.df[f"current_measured_{i}"], label=f"Current {i}")
 	ax3[2].legend()
 
@@ -340,6 +356,11 @@ ax13.plot(myLog.df.timestamp, myLog.df.thrust_estimated_2,".", label = "act 3")
 ax13.plot(myLog.df.timestamp, myLog.df.thrust_estimated_3,".", label = "act 4")
 ax13.grid()
 ax13.legend()
+
+
+fig14,ax14= plt.subplots(1,sharex=True)
+fig14.canvas.manager.set_window_title(filename+"altitude controller2")
+ax14.plot(myLog.df.timestamp, myLog.df.battery_voltage,".", label = "act 1")
 
 
 

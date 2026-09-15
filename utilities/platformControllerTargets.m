@@ -1,11 +1,11 @@
 
 platform_targets = struct();
 platform_targets.V_td = 0.6; % m/s 0.4
-platform_targets.h_cut   = 0.15; % m 0.3
+platform_targets.h_cut   = 0.05; % m 0.3
 platform_targets.h_blend = 1; % m
 
 
-platform_targets.a_dec =3; %11.3
+platform_targets.a_dec =4; %11.3
 % platform_targets.a_dec_high = 15; % m/s2
 platform_targets.a_dec_low = 5; % m/s2
 
