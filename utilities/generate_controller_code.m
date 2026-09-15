@@ -134,8 +134,8 @@ delete(fullfile(destinationFolder, 'src', "ert_main.cpp"));
 
 if exist(fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/MetuX/CM7/app/Controller/"), 'dir')
     copyfile(fullfile(destinationFolder), fullfile(pwd,"../../STM32CubeIDE/workspace_1.19.0/MetuX/CM7/app/Controller/"))
-elseif exist(fullfile(pwd,"../../Metu-X-stm32/app/"), 'dir')
-    copyfile(fullfile(destinationFolder), fullfile(pwd,"../../Metu-X-stm32/app/Controller/"))
+elseif exist(fullfile(pwd,"../../Metu-X-stm32/CM7/app/"), 'dir')
+    copyfile(fullfile(destinationFolder), fullfile(pwd,"../../Metu-X-stm32/CM7/app/Controller/"))
     
 end
 

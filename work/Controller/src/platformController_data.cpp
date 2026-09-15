@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'platformController'.
 //
-// Model version                  : 1.104
+// Model version                  : 1.106
 // Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
-// C/C++ source code generated on : Sun Sep 13 20:09:30 2026
+// C/C++ source code generated on : Tue Sep 15 14:42:45 2026
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -20,64 +20,447 @@
 //
 #include "platformController.h"
 
-// Constant parameters (default storage)
-const PlatformController::ConstP rtConstP{
-  // Expression: vq
-  //  Referenced by: '<S3>/1-D Lookup Table'
-
-  { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.60276754624870188, 1.0122518293263352,
-    1.3671777917150489, 1.6873094014007171, 1.9829927402618874,
-    2.2602363892118404, 2.5228848351536017, 2.7735764095720752,
-    3.0142175279335697, 3.2462410397781429, 3.4707578038205136,
-    3.6831446800738057, 3.8689461279669408, 4.031380860588925,
-    4.1737599379300736, 4.29853500120375, 4.4075686345758927, 4.5023016678806851,
-    4.5838631045974036, 4.6531428946367628, 4.7108431431512026,
-    4.7575137063410073, 4.7935774431920235, 4.8193488806050055,
-    4.8350461376185621, 4.8407993768093061, 4.836656080638579,
-    4.8225820502424526, 4.7984608354133513, 4.7640889814460383,
-    4.7191685333063962, 4.6632952151075147, 4.5959412820081536,
-    4.5164315134825976, 4.4239095114664728, 4.317299197631904,
-    4.2021509380902753, 4.083757141388527, 3.9618269175598519,
-    3.8360229888064366, 3.7059509528870236, 3.5711444058096813,
-    3.4310453909215748, 3.284976797747722, 3.1321035166008748,
-    2.9713754994699095, 2.8014411445968928, 2.6205099410292769,
-    2.4261229002677274, 2.2147398360102279, 1.9809271467948366,
-    1.7155385275082355, 1.4007399406196697, 0.99049104310448965,
-    0.0085186715095590445 },
-
-  // Pooled Parameter (Expression: xq)
+// Block parameters (default storage)
+PlatformController::P PlatformController::rtP{
+  // Variable: mass
   //  Referenced by:
-  //    '<S3>/1-D Lookup Table'
-  //    '<S3>/1-D Lookup Table1'
+  //    '<S3>/Bias'
+  //    '<S4>/Bias'
 
-  { -0.0, 0.05, 0.1, 0.15000000000000002, 0.2, 0.25, 0.30000000000000004,
-    0.35000000000000003, 0.4, 0.45, 0.5, 0.55, 0.60000000000000009, 0.65,
-    0.70000000000000007, 0.75, 0.8, 0.85000000000000009, 0.9,
-    0.95000000000000007, 1.0, 1.05, 1.1, 1.1500000000000001, 1.2000000000000002,
-    1.25, 1.3, 1.35, 1.4000000000000001, 1.4500000000000002, 1.5, 1.55, 1.6,
-    1.6500000000000001, 1.7000000000000002, 1.75, 1.8, 1.85, 1.9000000000000001,
-    1.9500000000000002, 2.0, 2.0500000000000003, 2.1, 2.15, 2.2, 2.25,
-    2.3000000000000003, 2.35, 2.4000000000000004, 2.45, 2.5, 2.5500000000000003,
-    2.6, 2.6500000000000004, 2.7, 2.75, 2.8000000000000003, 2.85,
-    2.9000000000000004, 2.95, 3.0 },
+  {
+    31.5,
+    37.3
+  },
 
-  // Expression: aq
-  //  Referenced by: '<S3>/1-D Lookup Table1'
+  // Mask Parameter: PIDController_InitialConditionF
+  //  Referenced by: '<S174>/Integrator'
 
-  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.3850962637826969, 7.6473609288130628,
-    9.1671586558614351, 10.348249787444278, 11.330290135860519,
-    12.179368550944632, 12.932428434666498, 13.612402405321886,
-    14.234593824589766, 14.809772212905436, 15.345831985503986,
-    14.650434739730974, 13.423399707898724, 12.250398008648729,
-    11.12093412757768, 10.027057347630434, 8.962536114325065, 7.9223441644623716,
-    6.9023217410298461, 5.8989464480190428, 4.9091695741540518,
-    3.9302970676899216, 2.9598994014332165, 1.995740491976119,
-    1.0357207961775394, 0.077828310110044874, -0.87990490461114668,
-    -1.8394434902465648, -2.8027894253721546, -3.772024940950919,
-    -4.7493601684753779, -5.7371888604373034, -6.7381565893277271,
-    -7.7552471990775693, -8.791896337076583, -9.81, -9.81, -9.81, -9.81, -9.81,
-    -9.81, -9.81, -9.81, -9.81, -9.81, -9.81, -9.81, -9.81, -9.81, -9.81, -9.81,
-    -9.81, -9.81, -9.81, -9.81 }
+  0.0,
+
+  // Mask Parameter: PIDController_InitialConditio_j
+  //  Referenced by: '<S110>/Integrator'
+
+  -9.81,
+
+  // Mask Parameter: PIDController_InitialConditi_jf
+  //  Referenced by: '<S49>/Integrator'
+
+  0.0,
+
+  // Mask Parameter: PIDController_Kt
+  //  Referenced by: '<S61>/Kt'
+
+  1.0,
+
+  // Mask Parameter: PIDController_Kt_b
+  //  Referenced by: '<S122>/Kt'
+
+  1.0,
+
+  // Mask Parameter: PIDController_LowerIntegratorSa
+  //  Referenced by: '<S174>/Integrator'
+
+  -16.5,
+
+  // Mask Parameter: PIDController_LowerIntegrator_l
+  //  Referenced by: '<S110>/Integrator'
+
+  -10.0,
+
+  // Mask Parameter: PIDController_LowerIntegrator_n
+  //  Referenced by: '<S49>/Integrator'
+
+  -3.0,
+
+  // Mask Parameter: PIDController_LowerSaturationLi
+  //  Referenced by: '<S181>/Saturation'
+
+  -16.5,
+
+  // Mask Parameter: PIDController_UpperIntegratorSa
+  //  Referenced by: '<S174>/Integrator'
+
+  16.5,
+
+  // Mask Parameter: PIDController_UpperIntegrator_c
+  //  Referenced by: '<S110>/Integrator'
+
+  3.0,
+
+  // Mask Parameter: PIDController_UpperIntegrator_m
+  //  Referenced by: '<S49>/Integrator'
+
+  3.0,
+
+  // Mask Parameter: PIDController_UpperSaturationLi
+  //  Referenced by: '<S181>/Saturation'
+
+  16.5,
+
+  // Mask Parameter: Subsystem_t_close
+  //  Referenced by: '<S135>/Constant'
+
+  4.0,
+
+  // Mask Parameter: Subsystem_t_close_e
+  //  Referenced by: '<S129>/Constant'
+
+  5.0,
+
+  // Mask Parameter: SetResetFlipFlop_Q0
+  //  Referenced by: '<S134>/Unit Delay'
+
+  false,
+
+  // Mask Parameter: DetectIncrease_vinit
+  //  Referenced by: '<S130>/Delay Input1'
+
+  false,
+
+  // Expression: -9.8
+  //  Referenced by: '<S3>/Constant'
+
+  -9.8,
+
+  // Computed Parameter: Out1_Y0
+  //  Referenced by: '<S131>/Out1'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S4>/Constant5'
+
+  0.0,
+
+  // Expression: 9.81
+  //  Referenced by: '<S4>/Bias3'
+
+  9.81,
+
+  // Expression: 0
+  //  Referenced by: '<S4>/Constant6'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S3>/Constant5'
+
+  0.0,
+
+  // Expression: 9.81
+  //  Referenced by: '<S3>/Bias3'
+
+  9.81,
+
+  // Expression: 0
+  //  Referenced by: '<S3>/Constant8'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S2>/Constant2'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S2>/Constant3'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S38>/Constant1'
+
+  0.0,
+
+  // Expression: 0
+  //  Referenced by: '<S99>/Constant1'
+
+  0.0,
+
+  // Expression: 0.52
+  //  Referenced by: '<S136>/Constant'
+
+  0.52,
+
+  // Expression: -0.52
+  //  Referenced by: '<S136>/Constant1'
+
+  -0.52,
+
+  // Computed Parameter: Integrator_gainval
+  //  Referenced by: '<S174>/Integrator'
+
+  0.005,
+
+  // Expression: 0
+  //  Referenced by: '<S5>/Rate Transition1'
+
+  0.0,
+
+  // Expression: 272
+  //  Referenced by: '<S137>/Saturation'
+
+  272.0,
+
+  // Expression: -272
+  //  Referenced by: '<S137>/Saturation'
+
+  -272.0,
+
+  // Expression: 2.85/300
+  //  Referenced by: '<S4>/Gain'
+
+  0.0095,
+
+  // Expression: -2
+  //  Referenced by: '<S4>/Gain3'
+
+  -2.0,
+
+  // Expression: 1
+  //  Referenced by: '<S4>/Bias5'
+
+  1.0,
+
+  // Expression: 1
+  //  Referenced by: '<S4>/Saturation4'
+
+  1.0,
+
+  // Expression: 0.7
+  //  Referenced by: '<S4>/Saturation4'
+
+  0.7,
+
+  // Expression: -9.81
+  //  Referenced by: '<S4>/Bias4'
+
+  -9.81,
+
+  // Computed Parameter: DiscreteTimeIntegrator_gainval
+  //  Referenced by: '<S133>/Discrete-Time Integrator'
+
+  0.02,
+
+  // Expression: 0
+  //  Referenced by: '<S133>/Discrete-Time Integrator'
+
+  0.0,
+
+  // Computed Parameter: Integrator_gainval_l
+  //  Referenced by: '<S110>/Integrator'
+
+  0.02,
+
+  // Expression: -9.81
+  //  Referenced by: '<S4>/Saturation3'
+
+  -9.81,
+
+  // Expression: -1
+  //  Referenced by: '<S4>/Constant2'
+
+  -1.0,
+
+  // Expression: -9.81
+  //  Referenced by: '<S4>/Constant1'
+
+  -9.81,
+
+  // Computed Parameter: DiscreteTimeIntegrator_gainva_o
+  //  Referenced by: '<S71>/Discrete-Time Integrator'
+
+  0.02,
+
+  // Expression: 0
+  //  Referenced by: '<S71>/Discrete-Time Integrator'
+
+  0.0,
+
+  // Expression: 2.85/300
+  //  Referenced by: '<S3>/Gain'
+
+  0.0095,
+
+  // Expression: -2
+  //  Referenced by: '<S3>/Gain3'
+
+  -2.0,
+
+  // Expression: 1
+  //  Referenced by: '<S3>/Bias5'
+
+  1.0,
+
+  // Expression: 1
+  //  Referenced by: '<S3>/Saturation4'
+
+  1.0,
+
+  // Expression: 0.7
+  //  Referenced by: '<S3>/Saturation4'
+
+  0.7,
+
+  // Expression: -9.81
+  //  Referenced by: '<S3>/Bias4'
+
+  -9.81,
+
+  // Expression: inf
+  //  Referenced by: '<S3>/Saturation1'
+
+  rtInf,
+
+  // Expression: 0
+  //  Referenced by: '<S3>/Saturation1'
+
+  0.0,
+
+  // Expression: -inf
+  //  Referenced by: '<S3>/Saturation2'
+
+  rtMinusInf,
+
+  // Computed Parameter: Integrator_gainval_n
+  //  Referenced by: '<S49>/Integrator'
+
+  0.02,
+
+  // Expression: -inf
+  //  Referenced by: '<S3>/Saturation3'
+
+  rtMinusInf,
+
+  // Expression: -0.9
+  //  Referenced by: '<S3>/Constant2'
+
+  -0.9,
+
+  // Expression: -9.81
+  //  Referenced by: '<S3>/Constant1'
+
+  -9.81,
+
+  // Expression: 0
+  //  Referenced by: '<S2>/Constant1'
+
+  0.0,
+
+  // Expression: 1/4
+  //  Referenced by: '<S2>/Gain'
+
+  0.25,
+
+  // Expression: 272
+  //  Referenced by: '<S137>/Saturation1'
+
+  272.0,
+
+  // Expression: -272
+  //  Referenced by: '<S137>/Saturation1'
+
+  -272.0,
+
+  // Expression: 272
+  //  Referenced by: '<S137>/Saturation2'
+
+  272.0,
+
+  // Expression: -272
+  //  Referenced by: '<S137>/Saturation2'
+
+  -272.0,
+
+  // Expression: 272
+  //  Referenced by: '<S137>/Saturation3'
+
+  272.0,
+
+  // Expression: -272
+  //  Referenced by: '<S137>/Saturation3'
+
+  -272.0,
+
+  // Expression: 1/4
+  //  Referenced by: '<S2>/Gain1'
+
+  0.25,
+
+  // Expression: -9.81
+  //  Referenced by: '<S3>/Bias6'
+
+  -9.81,
+
+  // Expression: 0
+  //  Referenced by: '<S38>/Clamping_zero'
+
+  0.0,
+
+  // Expression: -9.81
+  //  Referenced by: '<S4>/Bias6'
+
+  -9.81,
+
+  // Expression: 0
+  //  Referenced by: '<S99>/Clamping_zero'
+
+  0.0,
+
+  // Expression: 1
+  //  Referenced by: '<S71>/Constant'
+
+  1.0,
+
+  // Expression: 1
+  //  Referenced by: '<S133>/Constant'
+
+  1.0,
+
+  // Expression: isSetWhenUndefinedState
+  //  Referenced by: '<S134>/Constant'
+
+  true,
+
+  // Computed Parameter: Constant_Value_cz
+  //  Referenced by: '<S38>/Constant'
+
+  1,
+
+  // Computed Parameter: Constant2_Value_o
+  //  Referenced by: '<S38>/Constant2'
+
+  -1,
+
+  // Computed Parameter: Constant3_Value_p
+  //  Referenced by: '<S38>/Constant3'
+
+  1,
+
+  // Computed Parameter: Constant4_Value
+  //  Referenced by: '<S38>/Constant4'
+
+  -1,
+
+  // Computed Parameter: Constant_Value_d
+  //  Referenced by: '<S99>/Constant'
+
+  1,
+
+  // Computed Parameter: Constant2_Value_a
+  //  Referenced by: '<S99>/Constant2'
+
+  -1,
+
+  // Computed Parameter: Constant3_Value_j
+  //  Referenced by: '<S99>/Constant3'
+
+  1,
+
+  // Computed Parameter: Constant4_Value_l
+  //  Referenced by: '<S99>/Constant4'
+
+  -1
 };
 
 //

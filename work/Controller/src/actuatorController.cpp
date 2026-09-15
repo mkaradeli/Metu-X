@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'actuatorController'.
 //
-// Model version                  : 1.82
+// Model version                  : 1.83
 // Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
-// C/C++ source code generated on : Sun Sep 13 15:43:11 2026
+// C/C++ source code generated on : Tue Sep 15 14:33:44 2026
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -38,7 +38,7 @@ struct_IJnI4imAtcq7GOnq1yNUdE currentControllerGains{
   {
     0.624023795F,
     2.77958274F,
-    15.0F,
+    25.0F,
     -15.0F,
     2.0e+15F,
     -2.0e+15F,
