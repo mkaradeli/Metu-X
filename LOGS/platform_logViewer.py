@@ -40,6 +40,12 @@ filename = "tlm_20260915_220426.bin"
 filename = "tlm_20260916_150857.bin" #pos ref
 filename = "tlm_20260916_160043.bin" #hwil1
 filename = "tlm_20260916_162536.bin" #hwil2
+filename = "tlm_20260917_000709.bin" # carsamba hwil aksam 1  
+filename = "tlm_20260917_003450.bin" # carsamba hwil aksam 2
+filename = "tlm_20260917_010305.bin" # carsamba hwil aksam 3
+
+
+# tlm_20260917_003450.bin
 # filename = "tlm_20260914_175642.bin" # pazartesi 2. drop sonrasi safe discharge
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
