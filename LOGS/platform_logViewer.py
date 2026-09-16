@@ -37,6 +37,9 @@ filename = 'tlm_20260915_162440.bin' # salı günü ikinci test broooo
 filename = "LOG2053.BIN" # vana acmayan 5m, sd 
 filename = "tlm_20260915_214715.bin" # vana acmayan 5m, telemetry
 filename = "tlm_20260915_220426.bin"
+filename = "tlm_20260916_150857.bin" #pos ref
+filename = "tlm_20260916_160043.bin" #hwil1
+filename = "tlm_20260916_162536.bin" #hwil2
 # filename = "tlm_20260914_175642.bin" # pazartesi 2. drop sonrasi safe discharge
 # myLog = log_processor(filename=filename)
 # print(myLog.df.axes)
